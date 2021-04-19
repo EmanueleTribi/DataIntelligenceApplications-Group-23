@@ -5,5 +5,7 @@ Progetto di DIA
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
-| Try | [todo](#) |
-
+| Environment Social Network | [X](#) |
+| Environment SN initialisation| [X](#) |
+| Environment Advertising | [X](#) |
+| Environment ADV initialisation | [X](#) |
