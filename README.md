@@ -1,7 +1,6 @@
 # DirezioneInvestigativaAntimafia-DIA-
 Repository per il progetto di Data and Intelligence Applications
 
-public void println(String x) {
 Progetto di DIA  
 
 | Functionality | State |
@@ -22,7 +21,6 @@ Progetto di DIA
 [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#)
 [![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
 -->
-}
 
 To launch our project, the client.jar and server.jar files must be into a specific folder. There must be three sub-folders: 
 one named "database", another one with the javafx package (11.0.2 version) and a third one called LoggerFiles that contains 
