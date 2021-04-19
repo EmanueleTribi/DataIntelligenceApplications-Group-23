@@ -6,6 +6,8 @@ Progetto di DIA
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
 | Environment Social Network | [X](#) |
+| Environment SN: node class| [X](#) |
+| Environment SN: features| [X](#) |
 | Environment SN initialisation| [X](#) |
 | Environment Advertising | [X](#) |
 | Environment ADV initialisation | [X](#) |
