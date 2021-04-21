@@ -3,6 +3,9 @@ import numpy as np
 # test probability of observing a slot: equivalent to delta_s q_a
 deltas=[0.8,0.5,.44,0.40,0.35,0.20]
 
+#this is the best possible auction we can make 
+#le statistiche di click le calcolerò poi con qualche formula a caso rubata dal
+# egidio Battistini
 
 class VCG():
     def __init__(self,deltas=[0.8,0.5,.44,0.40,0.35,0.20]):
@@ -39,9 +42,3 @@ class VCG():
    
 
 
-
-a=[3,5,6,2,0,0,0,0,0]
-vcg=VCG(deltas)
-
-b=vcg.best_allocation(a)
-print(b)
