@@ -12,7 +12,7 @@ class GPTS_Learner(GeneralLearner):
         self.pulled_arms = []
     ## parameters of the GPTS       
         alpha = 10.0
-        kernel = C(1.0, (1e-3, 1e3)) * RBF(1.0, (1è-3, 1e3))
+        kernel = C(1.0, (1e-3, 1e3)) * RBF(1.0, (1e-3, 1e3))
         self.gp = GaussianProcessRegressor(kernel=kernel, alpha = alpha**2, normalize=True, n_restarts_optimizer = 9)
 
 ## extend the funtion update_observations of the superclass because we want to 
