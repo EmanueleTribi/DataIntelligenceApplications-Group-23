@@ -11,3 +11,10 @@ class GeneralLearner:
     def update_observations(self, pulled_arm, reward):
         self.reward_per_arm[pulled_arm].append(reward)
         self.collected_rewards = np.append(self.collected_rewards, reward)
+
+    def pull_arm(self):
+        pass    
+
+    def update(self,pulled_arm, reward):
+        self.update_observations(pulled_arm, reward)
+        pass
