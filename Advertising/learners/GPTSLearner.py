@@ -4,16 +4,17 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 
 class GPTS_Learner(GeneralLearner):
-    def __init__(self, n_arms, arms):
+    def __init__(self, n_arms, arms, adv_id):
         super().__init__(n_arms)
-        self.arms =arms
+        self.adv_id = adv_id
+        self.arms = arms
         self.means = np.zeros(self.n_arms)
-        self.sigmas = npones(self.n_arms)*10
+        self.sigmas = np.ones(self.n_arms)*10
         self.pulled_arms = []
     ## parameters of the GPTS       
         alpha = 10.0
         kernel = C(1.0, (1e-3, 1e3)) * RBF(1.0, (1e-3, 1e3))
-        self.gp = GaussianProcessRegressor(kernel=kernel, alpha = alpha**2, normalize=True, n_restarts_optimizer = 9)
+        self.gp = GaussianProcessRegressor(kernel=kernel, alpha = alpha**2, normalize_y=True, n_restarts_optimizer = 9)
 
 ## extend the funtion update_observations of the superclass because we want to 
 ## update also the list of the pulled arms (together with the rewards and the reward per arm)
