@@ -17,12 +17,15 @@ class StochasticLearner:
     ## that is the random bid that the advertiser will make, it depends on a parameter that can be defined 
     ## once initialized the stochastic learner and on the time variable self.t
 
-
+    ## risolvere il problema che non deve mai diventare minore di 0
     def stoch_bid(self):
         num = random.random()
         if num > 0.5:
             bid_value = self.param_bid + self.t%3
         else:
             bid_value = self.param_bid - self.t%3
+
+        if bid_value < 0:
+            bid_value = 0    
         return bid_value
     ## function random bid maybe considering a max bid
