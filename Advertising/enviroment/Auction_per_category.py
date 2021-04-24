@@ -1,23 +1,23 @@
+from Advertising.enviroment.VCG import VCG
+from Advertising.enviroment.Advertising_envirorment import Advertising_envirorment
 import numpy as np
 
-#this is an example of possible function of given a bid return the number of clicks
 
-def clicks(x):
-    return 1-np.exp(-4*x)
+#la funzione si occupa di gestire l'auction
+# prende in ingresso le bids (lista di oggetti bids)
+# calcola la allocazione migliore per gli Ads 
+# e calcola i payment per gli advertiser
+# le bids che sono 0 vanno rimosse
+class Auction_per_category():
+    def __init__(self):
+       self.vcg=VCG()
+       pass
 
+    def auction(self,bids):
+        for bid in bids:
+            if bid.bid==0:
+                bids.remove(bid)
+        best = self.vcg.best_allocation(bids)
+        return best   
 
-class Advertising_envirorment():
-    def __init__(self, bids, sigma):
-        self.bids=bids
-        self.means=clicks(bids)
-        self.sigmas=np.ones(len(bids))*sigma
-
-    def round(self, pulled_arm):
-        return np.random.normal(self.means[pulled_arm], self.sigmas[pulled_arm])
-
-    def round_all(self, pulled_arms):
-        table=np.array([])
-        for pulled_arm in pulled_arms:
-            table=np.append(table,self.round(pulled_arm))
-        return table        
 
