@@ -55,13 +55,17 @@ class social_network_environment:
                 self.features_names = feature_list
                 self.features_domain = domain_list
 
-                first = data.get('categories')[0]
-                second = data.get('categories')[1]
-                third = data.get('categories')[2]
-                fourth = data.get('categories')[3]
-                fifth = data.get('categories')[4]
-                all_instances = first[1].get('instances') + second[1].get('instances') + third[1].get('instances') + fourth[1].get('instances') + fifth[1].get('instances')
+                # Creating an ordered list of the respective features for each node
+                first_instances = (data.get('categories')[0])[1].get('instances')
+                second_instances = (data.get('categories')[1])[1].get('instances')
+                third_instances = (data.get('categories')[2])[1].get('instances')
+                fourth_instances = (data.get('categories')[3])[1].get('instances')
+                fifth_instances = (data.get('categories')[4])[1].get('instances')
+                
+                all_instances = first_instances + second_instances + third_instances + fourth_instances + fifth_instances
+                all_instances = sorted(all_instances, key = lambda x: x['position'])
+        
                 self.features_instances = all_instances
+                
             except FileNotFoundError:
                 print("File not found - network")
-
