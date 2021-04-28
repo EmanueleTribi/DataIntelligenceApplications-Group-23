@@ -23,7 +23,8 @@ class social_network_environment:
             try:
                 with open(json_path_network, 'r') as network_file:
                     data = json.load(network_file)
-                    self.adj_matrix = np.array(data.get('adj_matrix'))
+                    matrix = np.array(data.get('adj_matrix'))
+                    self.adj_matrix = matrix.astype(dtype=np.float)
                     self.categories = np.array(data.get('categories'))
                     n_nodes = self.categories.shape[0]
                     self.active_nodes = np.zeros(n_nodes)
@@ -68,4 +69,4 @@ class social_network_environment:
                 self.features_instances = all_instances
                 
             except FileNotFoundError:
-                print("File not found - network")
+                print("File not found - features")
