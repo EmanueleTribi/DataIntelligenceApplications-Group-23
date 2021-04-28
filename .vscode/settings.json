@@ -1,4 +1,5 @@
 {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 <<<<<<< HEAD
     "python.pythonPath": "/Users/emanueletribi/opt/anaconda3/envs/projects_env/bin/python"
@@ -8,4 +9,7 @@
 =======
     "python.pythonPath": "C:\\Users\\bboym\\anaconda3\\python.exe"
 >>>>>>> 2bfde2c8cea73043e9728ece4522cee22019ef2a
+=======
+    "python.pythonPath": "C:\\Users\\Giulio Alizoni\\anaconda3\\envs\\RecSysFramework\\python.exe"
+>>>>>>> Stashed changes
 }
