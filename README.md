@@ -5,9 +5,9 @@ Progetto di DIA
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
-| Environment Social Network | [X](#) |
-| Environment SN: node class| [X](#) |
-| Environment SN: features| [X](#) |
-| Environment SN initialisation| [X](#) |
+| Environment Social Network | [Y](#Not completely Over- see next) |
+| Environment SN: substitute get with fromFileName method | [X] |
+| Environment SN: features| [Y](#) |
+| Environment SN initialisation| [Y](#) |
 | Environment Advertising | [X](#) |
 | Environment ADV initialisation | [X](#) |

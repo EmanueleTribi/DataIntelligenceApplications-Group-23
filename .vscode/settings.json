@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "/Users/emanueletribi/opt/anaconda3/envs/projects_env/bin/python"
+=======
+    "python.pythonPath": "C:\\Users\\Giulio Alizoni\\anaconda3\\envs\\RecSysFramework\\python.exe"
+>>>>>>> ea06629106cd723cfad6e276c6e6bad4db28ca10
 }
