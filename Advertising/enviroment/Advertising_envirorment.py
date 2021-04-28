@@ -11,7 +11,7 @@ class Advertising_envirorment():
         self.means=clicks(bids)
         self.sigmas=np.ones(len(bids))*sigma
 
-        #per ora ha una struttura semplices
+        #per ora ha una struttura semplice
         #andrà modificato affinchè ritorni un reward in funzione delle features
     def round(self, pulled_arm):
         return np.random.normal(self.means[pulled_arm], self.sigmas[pulled_arm])
