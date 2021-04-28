@@ -14,7 +14,7 @@ class Network_creator:
         self.start_edges = start_edges
 
         #clear creation
-        if adj_matrix.any():
+        if adj_matrix == None:
             self.graph = nx.barabasi_albert_graph(n = nodes, m = start_edges)
             self.categories = np.empty(shape = self.nodes)
             self.adj_matrix = nx.adjacency_matrix(self.graph)
@@ -81,5 +81,4 @@ class Network_creator:
         json.dump(net_dict, network_file, separators=(',',':'))
 
         network_file.close()
-
 
