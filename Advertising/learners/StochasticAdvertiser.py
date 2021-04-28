@@ -1,15 +1,15 @@
 import numpy as np
 import random
 class StochasticLearner:
-    def __init__(self, param_bid, adv_id):
-        self.param_bid = param_bid
+    def __init__(self, adv_id):
         self.t = 0
         self.adv_id = adv_id
     ## rewards shouldn't affect a stochstic learner, for which the only updated parameter should be the round number 
     ##    self.reward_per_arm = x = [[] for i in range(n_arms)]
     ##    self.collected_rewards = np.array([])
 
-    ## funtion that updates the round
+    ## funtion that updates the round 
+    ## POTREBBE NON SERVIRE
     def update(self):
         self.t += 1
 
@@ -19,13 +19,6 @@ class StochasticLearner:
 
     ## risolvere il problema che non deve mai diventare minore di 0
     def stoch_bid(self):
-        num = random.random()
-        if num > 0.5:
-            bid_value = self.param_bid + self.t%3
-        else:
-            bid_value = self.param_bid - self.t%3
-
-        if bid_value < 0:
-            bid_value = 0    
+        bid_value = randint(0, 4)
         return bid_value
     ## function random bid maybe considering a max bid
