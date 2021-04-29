@@ -16,40 +16,29 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
                 adj_matrix[i][j] = element
     if create_json:
         new_adj_matrix_file = open("SocialNetwork/new_adj_matrix_file.json", 'w', encoding='utf-8')
-        dictionary = {'adj_matrix': adj_matrix}
+        dictionary = {'adj_matrix': adj_matrix.tolist()}
         json.dump(dictionary, new_adj_matrix_file, separators=(',',':'), indent=4)
 
 
 def activation_probability(category_i=1, category_j=1, feature_values_i=None, feature_values_j=None, minimum=0.03, maximum=0.7):
-    value = minimum
-    common_features = count_common(feature_values_i, feature_values_j)
-    if category_i == category_j:
-        if common_features != 0:
-            value = 0.15*common_features
-    elif category_i == 4:
+    similarity = jaccard_similarity(feature_values_i, feature_values_j)
+    if similarity == 0:
+        return minimum
+    if category_i != category_j and category_i == 4:
         if feature_values_i.get("verified"):
-            value = 0.2
-        else:
-            value = 0.1
-        if common_features != 0:
-            value = value + 0.2*common_features
-    elif category_j == 4:
+            return maximum*similarity + 0.2
+        return maximum*similarity + 0.1
+    if category_i != category_j and category_j == 4:
         if feature_values_j.get("verified"):
-            value = 0.2  
-        else:
-            value = 0.1
-        if common_features != 0:
-            value = value + 0.2*common_features
-    else:
-        if common_features != 0:
-            value = 0.1*common_features
+            return maximum*similarity + 0.2
+        return maximum*similarity + 0.1
+    return maximum*similarity
 
-    return value
-
-
-def count_common(vector1 = None, vector2 = None):
-    value = 0
+def jaccard_similarity(vector1=None, vector2=None):
+    intersection = 0
+    
     for key in vector1:
         if key in vector2 and vector1[key] == vector2[key]:
-            value += 1
-    return value
+            intersection += 1
+    union = len(vector1) + len(vector2) - intersection
+    return float(intersection/union)
