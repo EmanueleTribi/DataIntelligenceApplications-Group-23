@@ -21,7 +21,7 @@ class GPTS_Learner(GeneralLearner):
     def update_observations(self, arm_idx, reward):
         super().update_observations(arm_idx, reward)
         ## per ogni categoria append l'arm corrispondente alla bid, 
-        ## pulled_arms[[arm_1, arm_3, ..., ..., ...][arm2, ..., ..., ..., ...]...]
+        ## pulle_arms[[arm_1, arm_3, ..., ..., ...][arm2, ..., ..., ...]]
         self.pulled_arms.append(self.arms[arm_idx])
 
     ## funtion that updates the model(means, sigmas) looking at the new rewards obtained from the enviroment
