@@ -1,9 +1,10 @@
+
 import numpy as np
 import json
 from ast import literal_eval
 from random import randint
 from activation_probabilities import compute_probabilities
-from Config.network_init import *
+from network_init import *
 
 class social_network_environment:
 
@@ -36,6 +37,7 @@ class social_network_environment:
                     net = Network_creator.fromFilename(json_path_network)
                     self.adj_matrix = net.adj_matrix
                     compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories, feature_values=self.features_instances)
+                    self.categories = net.categories
                     n_nodes = net.nodes
                     self.active_nodes = np.zeros(n_nodes)
                      
