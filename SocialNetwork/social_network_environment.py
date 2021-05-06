@@ -2,7 +2,7 @@ import numpy as np
 import json
 from ast import literal_eval
 from random import randint
-from activation_probabilities import *
+from activation_probabilities import compute_probabilities
 
 class social_network_environment:
 
