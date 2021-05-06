@@ -1,5 +1,5 @@
 #class to identify who bidded and how much
-class Bid():
+class Bid(object):
     def __init__(self,bid,id):
         self.bid=bid
         self.ad_id=id
