@@ -1,14 +1,19 @@
 import numpy as np 
 from random import randint
 import json
+from network_init import *
 
 def create_features_from_json(json_path_network=None):
     if json_path_network != None:
         try:
-            with open('SocialNetwork/network.json') as json_file:
-                data = json.load(json_file)
-            categories = np.array(data.get('categories'))
-            file_path = "SocialNetwork/features.json"
+            # with open('network.json') as json_file:
+            #     data = json.load(json_file)
+            # categories = np.array(data.get('categories'))
+
+            net = Network_creator.fromFilename('network.json')
+            categories = np.array(net.categories)
+            
+            file_path = "features.json"
             features_file = open(file_path, 'w', encoding='utf-8')
 
 

@@ -3,6 +3,7 @@ import json
 from ast import literal_eval
 from random import randint
 from activation_probabilities import compute_probabilities
+from Config.network_init import *
 
 class social_network_environment:
 
@@ -18,20 +19,25 @@ class social_network_environment:
         self.features_domain = features_domain
         self.features_instances = features_instances
 
+        self.category_probabilities = {}
+
     
     def init_from_json(self, json_path_network=None, json_path_features=None):
         if json_path_network != None:
             try:
-                with open(json_path_network, 'r') as network_file:
-                    data = json.load(network_file)
-                    matrix = np.array(data.get('adj_matrix'))
-                    self.adj_matrix = matrix.astype(dtype=np.float)
-                    self.categories = np.array(data.get('categories'))
-                    n_nodes = self.categories.shape[0]
+                # with open(json_path_network, 'r') as network_file:
+                #     data = json.load(network_file)
+                #     matrix = np.array(data.get('adj_matrix'))
+                #     self.adj_matrix = matrix.astype(dtype=np.float)
+                #     compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories,
+                #                                 feature_values=self.features_instances)
+                #     self.categories = np.array(data.get('categories'))
+
+                    net = Network_creator.fromFilename(json_path_network)
+                    self.adj_matrix = net.adj_matrix
+                    compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories, feature_values=self.features_instances)
+                    n_nodes = net.nodes
                     self.active_nodes = np.zeros(n_nodes)
-                    #self.fictitious_nodes = np.ones(n_nodes) 
-                    # Is an array of 1s useful to represent fictitious? 
-                    self.weights_fictitious_nodes = np.ones(n_nodes)
                      
             except FileNotFoundError:
                 print("File not found - network")
@@ -68,10 +74,18 @@ class social_network_environment:
                 all_instances = sorted(all_instances, key = lambda x: x['position'])
         
                 self.features_instances = all_instances
+
+                # Now initializing array of fictitious_nodes with the category probability
+                probabilities = []
+                for element in feature_categories_list:
+                    probabilities.append(element.get('probability'))
+                
+                self.category_probabilities = dict(enumerate(probabilities, start = 1))
+
+                for node_category in self.categories:
+                    self.weights_fictitious_nodes.append(self.category_probabilities.get(node_category))
+
                 
             except FileNotFoundError:
                 print("File not found - features")
 
-    def preliminary_operations(self):
-        compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories,
-                                                feature_values=self.features_instances)

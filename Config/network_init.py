@@ -69,7 +69,7 @@ class Network_creator:
     
     #Creates JSON file storing the adjacency matrix of the Network
     def generate_json(self):
-        file_path = "SocialNetwork/network.json"
+        file_path = "network.json"
         network_file = open(file_path, 'w', encoding='utf-8')
 
         net_dict = {"nodes": self.nodes,
