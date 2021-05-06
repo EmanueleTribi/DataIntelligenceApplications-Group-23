@@ -15,7 +15,7 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
                 element = activation_probability(category_i, category_j, feature_values[i], feature_values[j])
                 adj_matrix[i][j] = element
     if create_json:
-        new_adj_matrix_file = open("SocialNetwork/new_adj_matrix_file.json", 'w', encoding='utf-8')
+        new_adj_matrix_file = open("Config/new_adj_matrix_file.json", 'w', encoding='utf-8')
         dictionary = {'adj_matrix': adj_matrix.tolist()}
         json.dump(dictionary, new_adj_matrix_file, separators=(',',':'), indent=4)
 

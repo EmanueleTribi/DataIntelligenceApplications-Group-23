@@ -13,7 +13,9 @@
                         "f",
                         "o"
                     ]
-                }
+                },
+
+                "probability": 0.4
             },
             {
                 "instances":[
@@ -84,7 +86,9 @@
                         "rich",
                         "very rich"
                     ]
-                }
+                },
+
+                "probability": 0.3
             },
             {
                 "instances":[
@@ -170,7 +174,9 @@
                         "reading",
                         "movies"
                     ]
-                }
+                },
+
+                "probability": 0.50
             },
             {
                 "instances":[
@@ -243,7 +249,9 @@
                         true,
                         false
                     ]
-                }
+                },
+
+                "probability": 0.2
             },
             {
                 "instances":[
@@ -386,7 +394,9 @@
                         "master",
                         "phd"
                     ]
-                }
+                },
+
+                "probability": 0.25
             },
             {
                 "instances":[
