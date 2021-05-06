@@ -2,6 +2,7 @@ import numpy as np
 import json
 from ast import literal_eval
 from random import randint
+from activation_probabilities import *
 
 class social_network_environment:
 
@@ -70,3 +71,7 @@ class social_network_environment:
                 
             except FileNotFoundError:
                 print("File not found - features")
+
+    def preliminary_operations(self):
+        compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories,
+                                                feature_values=self.features_instances)
