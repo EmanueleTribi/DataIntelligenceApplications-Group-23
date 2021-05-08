@@ -42,7 +42,7 @@ class Network_creator:
 
                 net = cls(nodes = net_dict["nodes"], 
                           start_edges = net_dict["start_edges"],
-                          adj_matrix = np.array(net_dict["adj_matrix"]))
+                          adj_matrix = np.array(net_dict["adj_matrix"]).astype('float64'))
 
                 net.categories = net_dict["categories"]
                 

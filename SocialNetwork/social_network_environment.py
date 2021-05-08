@@ -36,7 +36,6 @@ class social_network_environment:
 
                     net = Network_creator.fromFilename(json_path_network)
                     self.adj_matrix = net.adj_matrix
-                    compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories, feature_values=self.features_instances)
                     self.categories = net.categories
                     n_nodes = net.nodes
                     self.active_nodes = np.zeros(n_nodes)
@@ -83,10 +82,11 @@ class social_network_environment:
                     probabilities.append(element.get('probability'))
                 
                 self.category_probabilities = dict(enumerate(probabilities, start = 1))
-
+                self.weights_fictitious_nodes=[]
                 for node_category in self.categories:
                     self.weights_fictitious_nodes.append(self.category_probabilities.get(node_category))
-
+                
+                compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories, feature_values=self.features_instances)
                 
             except FileNotFoundError:
                 print("File not found - features")

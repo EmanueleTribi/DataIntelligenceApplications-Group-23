@@ -1,7 +1,6 @@
 import numpy as np
 import json 
 
-
 def compute_probabilities(adj_matrix=None, categories=None, feature_values=None, create_json=False):
     i = -1
     for line in adj_matrix:
@@ -12,7 +11,7 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
             if element == 1:
                 category_i = categories[i]
                 category_j = categories[j]
-                element = activation_probability(category_i, category_j, feature_values[i], feature_values[j])
+                element = activation_probability(category_i=category_i, category_j=category_j, feature_values_i=feature_values[i], feature_values_j=feature_values[j])
                 adj_matrix[i][j] = element
     if create_json:
         new_adj_matrix_file = open("Config/new_adj_matrix_file.json", 'w', encoding='utf-8')

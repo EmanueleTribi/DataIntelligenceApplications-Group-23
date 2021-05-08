@@ -34,7 +34,6 @@ def cascade(adj_matrix, active_nodes):
                     if adj_matrix[i][j] != 0 and active_nodes[j] != 1:
                         active_nodes[j] = np.random.binomial(n=1, p=adj_matrix[i][j]) 
                         if active_nodes[j] == 1:
-                            print(adj_matrix[i][j])
                             go_on = True
 
 
