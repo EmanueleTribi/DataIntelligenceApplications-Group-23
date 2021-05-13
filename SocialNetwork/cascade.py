@@ -1,4 +1,3 @@
-from social_network_environment import social_network_environment
 import numpy as np  
 
 def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1, slot_prominence=None):

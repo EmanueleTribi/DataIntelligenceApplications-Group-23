@@ -1,7 +1,7 @@
 import numpy as np 
 from random import randint
 import json
-from network_init import *
+from SocialNetwork.network_init import *
 
 def create_features_from_json(json_path_network=None):
     if json_path_network != None:

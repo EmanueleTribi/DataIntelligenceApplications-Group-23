@@ -3,8 +3,8 @@ import numpy as np
 import json
 from ast import literal_eval
 from random import randint
-from activation_probabilities import compute_probabilities
-from network_init import *
+from SocialNetwork.activation_probabilities import compute_probabilities
+from SocialNetwork.network_init import *
 
 class social_network_environment:
 

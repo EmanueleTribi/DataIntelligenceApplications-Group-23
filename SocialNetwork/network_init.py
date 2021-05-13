@@ -44,7 +44,7 @@ class Network_creator:
                           start_edges = net_dict["start_edges"],
                           adj_matrix = np.array(net_dict["adj_matrix"]).astype('float64'))
 
-                net.categories = net_dict["categories"]
+                net.categories = np.array(net_dict["categories"]).astype(int)
                 
                 return net
         except FileNotFoundError:
