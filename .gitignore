@@ -1,3 +1,4 @@
 .vscode/settings.json
-SocialNetwork/dumb_tests.py
+dumb_tests.py
 social_network_test.ipynb
+.SocialNetwork/__pycache__
