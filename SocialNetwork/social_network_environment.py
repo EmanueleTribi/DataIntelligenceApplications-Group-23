@@ -26,14 +26,6 @@ class social_network_environment:
     def init_from_json(self, json_path_network=None, json_path_features=None):
         if json_path_network != None:
             try:
-                # with open(json_path_network, 'r') as network_file:
-                #     data = json.load(network_file)
-                #     matrix = np.array(data.get('adj_matrix'))
-                #     self.adj_matrix = matrix.astype(dtype=np.float)
-                #     compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories,
-                #                                 feature_values=self.features_instances)
-                #     self.categories = np.array(data.get('categories'))
-
                     net = Network_creator.fromFilename(json_path_network)
                     self.adj_matrix = net.adj_matrix
                     self.categories = net.categories

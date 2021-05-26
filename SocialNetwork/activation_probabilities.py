@@ -12,6 +12,9 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
                 category_i = categories[i]
                 category_j = categories[j]
                 element = activation_probability(category_i=category_i, category_j=category_j, feature_values_i=feature_values[i], feature_values_j=feature_values[j])
+                if (category_i == 4 and category_j != 4) or (category_i != 4 and category_j == 4):
+                    print(str(i) + ", " + str(j) + "categories are " + str(category_i) + ", " + str(category_j))
+                    print(element)
                 adj_matrix[i][j] = element
     if create_json:
         new_adj_matrix_file = open("Config/new_adj_matrix_file.json", 'w', encoding='utf-8')
@@ -22,13 +25,13 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
 def activation_probability(category_i=1, category_j=1, feature_values_i=None, feature_values_j=None, minimum=0.03, maximum=0.7):
     similarity = jaccard_similarity(feature_values_i, feature_values_j)
     if similarity == 0:
+        if category_j == 4:
+            if feature_values_i.get("verified"):
+                return minimum + 0.2
+            return minimum + 0.1
         return minimum
-    if category_i != category_j and category_i == 4:
-        if feature_values_i.get("verified"):
-            return maximum*similarity + 0.2
-        return maximum*similarity + 0.1
     if category_i != category_j and category_j == 4:
-        if feature_values_j.get("verified"):
+        if feature_values_i.get("verified"):
             return maximum*similarity + 0.2
         return maximum*similarity + 0.1
     return maximum*similarity

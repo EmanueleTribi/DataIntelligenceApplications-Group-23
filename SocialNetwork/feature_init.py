@@ -6,9 +6,6 @@ from SocialNetwork.network_init import *
 def create_features_from_json(json_path_network=None):
     if json_path_network != None:
         try:
-            # with open('network.json') as json_file:
-            #     data = json.load(json_file)
-            # categories = np.array(data.get('categories'))
 
             net = Network_creator.fromFilename('network.json')
             categories = np.array(net.categories)
