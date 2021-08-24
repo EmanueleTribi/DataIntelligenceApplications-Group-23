@@ -3,4 +3,4 @@ dumb_tests.py
 social_network_test.ipynb
 .SocialNetwork/__pycache__/
 .Advertising/learners/__pycache__/
-
+dumb_tests_adv.py
