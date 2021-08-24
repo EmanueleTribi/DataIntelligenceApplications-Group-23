@@ -36,7 +36,7 @@ class greedyLearner:
     #function that iterates over the possible bid 
     #example: [0 0 0 0 0] -> [1 0 0 0 0], [0 1 0 0 0], [0 0 1 0 0], [0 0 0 1 0], [0 0 0 0 1]
     #         [1 0 0 0 0] -> [2 0 0 0 0], [1 1 0 0 0], [1 0 1 0 0], [1 0 0 1 0], [1 0 0 0 1]
-    #todo: function to evaluate the marginal gain (for now it is just a random integer)
+    #todo: function to evaluate the marginal gain as it should be (for now it is just a random integer)
     def evaluate(self):
         marginal_gain = np.zeros(self.n_bids)
         bids = self.bids
