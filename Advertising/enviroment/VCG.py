@@ -17,40 +17,111 @@ class VCG():
         self.deltas=np.array(deltas)
 
     
-
-## function that finds the best allocation  of 6 ads of a campaign
-
-    def best_allocation(self, bids):
+    #bids = bids made by ALL the advertires 
+    #campaign = category, needed to extract from the social network the click probability 
+    #social newtwork = explained before why we need it 
+    #allocation lenght = how long should the allocation be, by default it is 6
+    def best_allocation(self, bids, campaign, social_network=None, allocation_length=6):
         #make a copy 
         ausiliary_array = bids
 
+        #quality is the same for all the nodes belonging to a certain category and it is saved 
+        #in the social network - so I will take the first node of the considered category
+        index_first_node = np.where(social_network.categories == campaign)[0][0]
+        quality = social_network.weights_fictitious_nodes[index_first_node]
+
         best_allocation = []
 
-        for i in range(0, 6):
-
-            ##TODO: CHECK THE FUNCTION WITH MAX OPERATOR
-            
-            item = max(ausiliary_array, key=lambda item:item.bid)
+        for i in range(0, allocation_length):
+            item = max(ausiliary_array, key=lambda item:item.bid*quality)
             best_allocation.append(item)
-            ausiliary_array.remove(item)
+            ausiliary_array = np.delete(ausiliary_array, np.where(np.array(ausiliary_array) == item))
 
+        
         return best_allocation
         
-    ##function that finds the best allocation of all the campaigns
-    def all_best_allocations(self, list_camp_bids):
+    #can be divided maybe in two functions, as we do for the best allocation
+    def payments(self, bids, best_allocation, social_network=None):
+        #build the list of all players - probably useless, to be checked if we can 
+        #do this in a more elegant way
+        player_list=[]
+        for campaign in bids:
+            for bid in campaign:
+                if bid.ad_id not in player_list:
+                    player_list.append(bid.ad_id)
 
-        best_alloc_all_camp = []
-    
-        for i in range(0, 5):
-            best_alloc_all_camp.append(self.best_allocation(list_camp_bids[i]))
+
+        #the payment list will be a matrix n_players*5 
+        #Array with length = number of players that in each position has an array of lenght 5,
+        #the elements here are all the payments for all the campaigns
+        payments=[]
+        for player in player_list:
+            found = False
+            player_i_payments = []
+            for i in range(0, len(best_allocation)): #len(best_allocation) = number of campaigns
+                for j in range(0, len(best_allocation[i])): #for each ad displayed in the six slots...
+                    if best_allocation[i][j].ad_id == player:
+                        found = True
+
+                        #take the bids without the player and find the new best allocation
+                        #NB - np.delete() removes the INDEX, so j is right, putting "player" would be wrong
+                        auxiliary = np.delete(bids[i], j) 
+                        auxiliary_allocation = self.best_allocation(bids=auxiliary, campaign=i+1, 
+                                    social_network=social_network, allocation_length=6) 
+
+                        #reasoning about quality same as before 
+                        index_first_node = np.where(social_network.categories == i+1)[0][0]
+                        quality = social_network.weights_fictitious_nodes[index_first_node]
+                        
+                        #calculate x_a
+                        x_a = 0
+                        for k in range(0, len(auxiliary_allocation)):
+                            x_a += deltas[k]*quality*auxiliary_allocation[i].bid
+
+                        #calculate y_a
+                        y_a = 0
+                        for k in range(0, len(best_allocation[i])):
+                            if best_allocation[i][k].ad_id != player:
+                                y_a += deltas[k]*quality*best_allocation[i][k].bid
+
+                        #calculate the payment of player i for this allocation 
+                        div = deltas[j]*quality
+                        player_i_payments.append(1/div * (x_a - y_a)) ##CHECK
+
+                #if i don't find the player in the best allocation, the payment will be 0
+                if not found:
+                    player_i_payments.append(float(0))
+
+            #finally append the vector of all the payments for player i to the vector of payments        
+            payments.append(player_i_payments)
+
+        return payments
+
+
+                        
+
+
+
+            
+             
+
         
-        return best_alloc_all_camp
+    ##function that finds the best allocation of all the campaigns
+    def all_best_allocations(self, list_camp_bids, social_network=None):
+        best_alloc_all_camp = []
+        
+        for i in range(0, 5):
+            best_alloc_all_camp.append(self.best_allocation(bids=list_camp_bids[i], campaign=i+1, social_network=social_network))
+
+        #for now I wont return the payments since they have to be done better
+        return best_alloc_all_camp#, self.payments(bids=list_camp_bids, best_allocation=best_alloc_all_camp)
+
 
 '''
 ##this is the payment function 
 ## take in input the payment for a single ad (the bid)
 # and the list of all bids, necessary to calculate the VCG payment function
-    def payment(self,bid, bids):
+    def payments(self, bids):
         best_allo=self.best_allocation(bids)
         xa=np.inner(self.deltas,np.array(best_allo))
         ya=0
