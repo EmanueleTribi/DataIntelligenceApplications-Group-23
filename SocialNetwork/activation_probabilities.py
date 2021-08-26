@@ -12,9 +12,9 @@ def compute_probabilities(adj_matrix=None, categories=None, feature_values=None,
                 category_i = categories[i]
                 category_j = categories[j]
                 element = activation_probability(category_i=category_i, category_j=category_j, feature_values_i=feature_values[i], feature_values_j=feature_values[j])
-                if (category_i == 4 and category_j != 4) or (category_i != 4 and category_j == 4):
-                    print(str(i) + ", " + str(j) + "categories are " + str(category_i) + ", " + str(category_j))
-                    print(element)
+                #if (category_i == 4 and category_j != 4) or (category_i != 4 and category_j == 4):
+                 #   print(str(i) + ", " + str(j) + "categories are " + str(category_i) + ", " + str(category_j))
+                   # print(element)
                 adj_matrix[i][j] = element
     if create_json:
         new_adj_matrix_file = open("Config/new_adj_matrix_file.json", 'w', encoding='utf-8')
