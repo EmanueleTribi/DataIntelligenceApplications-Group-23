@@ -13,7 +13,7 @@ deltas=[0.8,0.5,.44,0.40,0.35,0.20]
 #this is the best possible auction we can make 
 
 class VCG():
-    def __init__(self,deltas=[0.8,0.5,.44,0.40,0.35,0.20]):
+    def __init__(self,deltas=deltas):
         self.deltas=np.array(deltas)
 
     
@@ -34,7 +34,8 @@ class VCG():
 
         for i in range(0, allocation_length):
             item = max(ausiliary_array, key=lambda item:item.bid*quality)
-            best_allocation.append(item)
+            if(item.bid != 0):
+                best_allocation.append(item)
             ausiliary_array = np.delete(ausiliary_array, np.where(np.array(ausiliary_array) == item))
 
         
@@ -56,27 +57,27 @@ class VCG():
         #the elements here are all the payments for all the campaigns
         payments=[]
         for player in player_list:
-            found = False
             player_i_payments = []
             for i in range(0, len(best_allocation)): #len(best_allocation) = number of campaigns
-                for j in range(0, len(best_allocation[i])): #for each ad displayed in the six slots...
+                found = False
+                #reasoning about quality same as before 
+                index_first_node = np.where(social_network.categories == i+1)[0][0]
+                quality = social_network.weights_fictitious_nodes[index_first_node]
+
+                for j in range(0, len(best_allocation[i])): #for each ad displayed in the slots...
                     if best_allocation[i][j].ad_id == player:
                         found = True
-
+                        auxiliary=[]
                         #take the bids without the player and find the new best allocation
                         #NB - np.delete() removes the INDEX, so j is right, putting "player" would be wrong
                         auxiliary = np.delete(bids[i], j) 
                         auxiliary_allocation = self.best_allocation(bids=auxiliary, campaign=i+1, 
                                     social_network=social_network, allocation_length=6) 
-
-                        #reasoning about quality same as before 
-                        index_first_node = np.where(social_network.categories == i+1)[0][0]
-                        quality = social_network.weights_fictitious_nodes[index_first_node]
                         
                         #calculate x_a
                         x_a = 0
                         for k in range(0, len(auxiliary_allocation)):
-                            x_a += deltas[k]*quality*auxiliary_allocation[i].bid
+                            x_a += deltas[k]*quality*auxiliary_allocation[k].bid
 
                         #calculate y_a
                         y_a = 0
@@ -85,13 +86,16 @@ class VCG():
                                 y_a += deltas[k]*quality*best_allocation[i][k].bid
 
                         #calculate the payment of player i for this allocation 
+                        div = 0
                         div = deltas[j]*quality
-                        player_i_payments.append(1/div * (x_a - y_a)) ##CHECK
+                        
+                        payment = 0
+                        payment = (1/div) * (x_a-y_a)
+                        player_i_payments.append(payment) ##CHECK
 
                 #if i don't find the player in the best allocation, the payment will be 0
                 if not found:
                     player_i_payments.append(float(0))
-
             #finally append the vector of all the payments for player i to the vector of payments        
             payments.append(player_i_payments)
 
