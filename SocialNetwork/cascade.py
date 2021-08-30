@@ -17,6 +17,13 @@ def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1,
             social_network.active_nodes[node_number] = np.random.binomial(n=1, p=click_probability)
     
     social_network.active_nodes = leg_sample(social_network.adj_matrix, social_network.active_nodes)
+    
+    total_active=0
+    for elem in social_network.active_nodes:
+        if elem == 1:
+            total_active += 1
+
+    return total_active/len(social_network.active_nodes)
 
 
             

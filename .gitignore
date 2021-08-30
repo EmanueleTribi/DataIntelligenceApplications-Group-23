@@ -5,3 +5,11 @@
 dumb_tests.py
 social_network_test.ipynb
 dumb_tests_adv.py
+.dist
+test.ipynb
+Point4.ipynb
+Advertising/enviroment/__pycache__/bid.cpython-39.pyc
+.gitignore
+.gitignore
+.gitignore
+*.pyc
