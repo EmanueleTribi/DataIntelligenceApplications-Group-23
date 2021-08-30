@@ -8,7 +8,7 @@ def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1,
         node_number += 1
         category = social_network.categories[node_number]
         slot = -1
-        for element in ad_allocation_list[category]:
+        for element in ad_allocation_list[category-1]:
             slot += 1
             if element.ad_id == learner_id:
                 break
