@@ -47,8 +47,9 @@ def bids_simulation(bids, n_adversaries, n_bids, social_network):
 
     vcg = VCG()
     allocation = vcg.all_best_allocations(list_camp_bids=ad_allocation_list, social_network=social_network)
+    payments = vcg.payments(bids=ad_allocation_list, best_allocation=allocation, social_network=social_network)
 
-    return allocation
+    return allocation, payments
 
 def setup(bids, n_adversaries=10, n_bids=5):
     bid_objects = []
@@ -81,9 +82,14 @@ def evaluate(n_bids, n_adversaries, social_network_environment, learner_bids=[0,
                 #marginal = evaluate_marginal(new_bid)
                 array_marginals=[]
                 for _ in range(20):
-                    allocation = bids_simulation(new_bid, n_adversaries=n_adversaries, n_bids=n_bids, social_network=social_network_environment)
+                    allocation, payments = bids_simulation(new_bid, n_adversaries=n_adversaries, n_bids=n_bids, social_network=social_network_environment)
+                    reward = 0
                     reward = np.mean(estimate_bids_influence(social_network=social_network_environment, ad_allocation_list=allocation, 
                                 slot_prominence=lambdas, iterations=500, learner_id=1))*len(social_network_environment.weights_fictitious_nodes)
+                    
+                    if payments[i][0] > 0:
+                        reward = reward - payments[i][0]
+
                     single_marginal = reward - previous_reward
                     array_marginals.append(single_marginal)
                 marginal = sum(array_marginals)/len(array_marginals)
