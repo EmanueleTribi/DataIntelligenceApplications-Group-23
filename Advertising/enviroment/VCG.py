@@ -43,61 +43,49 @@ class VCG():
         
     #can be divided maybe in two functions, as we do for the best allocation
     def payments(self, bids, best_allocation, social_network=None):
-        #build the list of all players - probably useless, to be checked if we can 
-        #do this in a more elegant way
-        player_list=[]
-        for campaign in bids:
-            for bid in campaign:
-                if bid.ad_id not in player_list:
-                    player_list.append(bid.ad_id)
-
-
-        #the payment list will be a matrix n_players*5 
-        #Array with length = number of players that in each position has an array of lenght 5,
-        #the elements here are all the payments for all the campaigns
+        #the payment list will be an array of dimension 5. array[i] == payment for category i+1 
         payments=[]
-        for player in player_list:
-            player_i_payments = []
-            for i in range(0, len(best_allocation)): #len(best_allocation) = number of campaigns
-                found = False
-                #reasoning about quality same as before 
-                index_first_node = np.where(social_network.categories == i+1)[0][0]
-                quality = social_network.weights_fictitious_nodes[index_first_node]
+        
+        for i in range(0, len(best_allocation)): #len(best_allocation) = number of campaigns
+            found = False
+            #reasoning about quality same as before 
+            index_first_node = np.where(social_network.categories == i+1)[0][0]
+            quality = social_network.weights_fictitious_nodes[index_first_node]
 
-                for j in range(0, len(best_allocation[i])): #for each ad displayed in the slots...
-                    if best_allocation[i][j].ad_id == player:
-                        found = True
-                        auxiliary=[]
-                        #take the bids without the player and find the new best allocation
-                        #NB - np.delete() removes the INDEX, so j is right, putting "player" would be wrong
-                        auxiliary = np.delete(bids[i], j) 
-                        auxiliary_allocation = self.best_allocation(bids=auxiliary, campaign=i+1, 
-                                    social_network=social_network, allocation_length=6) 
-                        
-                        #calculate x_a
-                        x_a = 0
-                        for k in range(0, len(auxiliary_allocation)):
-                            x_a += deltas[k]*quality*auxiliary_allocation[k].bid
+            for j in range(0, len(best_allocation[i])): #for each ad displayed in the slots...
+                if best_allocation[i][j].ad_id == 1:
+                    found = True
+                    auxiliary=[]
+                    #take the bids without the player and find the new best allocation
+                    #NB - np.delete() removes the INDEX, so j is right, putting "player" would be wrong
+                    auxiliary = np.delete(bids[i], j) 
+                    auxiliary_allocation = self.best_allocation(bids=auxiliary, campaign=i+1, 
+                                social_network=social_network, allocation_length=6) 
+                    
+                    #calculate x_a
+                    x_a = 0
+                    for k in range(0, len(auxiliary_allocation)):
+                        x_a += deltas[k]*quality*auxiliary_allocation[k].bid
 
-                        #calculate y_a
-                        y_a = 0
-                        for k in range(0, len(best_allocation[i])):
-                            if best_allocation[i][k].ad_id != player:
-                                y_a += deltas[k]*quality*best_allocation[i][k].bid
+                    #calculate y_a
+                    y_a = 0
+                    for k in range(0, len(best_allocation[i])):
+                        if best_allocation[i][k].ad_id != 1:
+                            y_a += deltas[k]*quality*best_allocation[i][k].bid
 
-                        #calculate the payment of player i for this allocation 
-                        div = 0
-                        div = deltas[j]*quality
-                        
-                        payment = 0
-                        payment = (1/div) * (x_a-y_a)
-                        player_i_payments.append(payment) ##CHECK
+                    #calculate the payment of player i for this allocation 
+                    div = 0
+                    div = deltas[j]*quality
+                    
+                    payment = 0
+                    payment = (1/div) * (x_a-y_a)
+                    payments.append(payment) ##CHECK
 
-                #if i don't find the player in the best allocation, the payment will be 0
-                if not found:
-                    player_i_payments.append(float(0))
-            #finally append the vector of all the payments for player i to the vector of payments        
-            payments.append(player_i_payments)
+            #if i don't find the player in the best allocation, the payment will be 0
+            if not found:
+                payments.append(float(0))
+               
+        
 
         return payments
 
