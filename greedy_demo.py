@@ -1,3 +1,4 @@
+from SocialNetwork.cascade import *
 import numpy as np
 from random import randint
 from pprint import pprint
@@ -7,7 +8,8 @@ from Advertising.enviroment.bid import *
 from Advertising.enviroment.VCG import *
 social_network = social_network_environment()
 social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
-lambdas=[0.8,0.5,.44,0.40,0.35,0.20]
+deltas=[0.4,0.32,0.27,0.22,0.18,0.05]
+
 ## funtion that  returns the marginal increment in the bid of the category passed
 ## va fatto il controllo che non sia maggiore di 4
     #def get_new_bids(self, category):
@@ -43,7 +45,7 @@ def bids_simulation(bids, n_adversaries, n_bids, social_network):
             adversary_bids.append(random.randint(0, 4))
         all_bids.append(adversary_bids)
 
-    ad_allocation_list = setup(bids=all_bids, n_adversaries=n_adversaries, n_bids=n_bids)
+    ad_allocation_list = setup(bids=all_bids, n_bids=n_bids)
 
     vcg = VCG()
     allocation = vcg.all_best_allocations(list_camp_bids=ad_allocation_list, social_network=social_network)
@@ -51,7 +53,7 @@ def bids_simulation(bids, n_adversaries, n_bids, social_network):
 
     return allocation, payments
 
-def setup(bids, n_adversaries=10, n_bids=5):
+def setup(bids, n_bids=5):
     bid_objects = []
     #print(bids)
     for i in range(0, n_bids):
@@ -80,19 +82,20 @@ def evaluate(n_bids, n_adversaries, social_network_environment, learner_bids=[0,
             if new_bid[i] != 4:
                 new_bid[i] += 1
                 #marginal = evaluate_marginal(new_bid)
-                array_marginals=[]
-                for _ in range(20):
+                array_rewards=[]
+                node_counts=[]
+                for _ in range(3000):
                     allocation, payments = bids_simulation(new_bid, n_adversaries=n_adversaries, n_bids=n_bids, social_network=social_network_environment)
-                    reward = 0
-                    reward = np.mean(estimate_bids_influence(social_network=social_network_environment, ad_allocation_list=allocation, 
-                                slot_prominence=lambdas, iterations=500, learner_id=1))*len(social_network_environment.weights_fictitious_nodes)
                     
-                    if payments[i][0] > 0:
-                        reward = reward - payments[i][0]
-
-                    single_marginal = reward - previous_reward
-                    array_marginals.append(single_marginal)
-                marginal = sum(array_marginals)/len(array_marginals)
+                    reward_temp, node_count = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
+                            slot_prominence=deltas)
+                    reset_nodes(social_network=social_network)
+                    reward = reward_temp - payments[i]
+                    array_rewards.append(reward)
+                    node_counts.append(node_count)
+                expected_reward = sum(array_rewards)/len(array_rewards)
+                print("Expected activated nodes are " + str(sum(node_counts)/len(node_counts)))
+                marginal = expected_reward - previous_reward
                 print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
                 if marginal < 0:
                     marginal = -1

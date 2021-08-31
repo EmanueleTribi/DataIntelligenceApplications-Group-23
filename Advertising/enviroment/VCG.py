@@ -1,14 +1,11 @@
 from itertools import combinations,permutations
 import numpy as np
 import operator
-# test probability of observing a slot: equivalent to delta_s(observe prob) q_a(click probability)
-#i assume that the quality of the ad is for all 1 (WRONG ASSUMPTION!!!!)
-deltas=[0.8,0.5,.44,0.40,0.35,0.20]
 
 #this is the best possible auction we can make 
 # test probability of observing a slot: equivalent to delta_s(observe prob) q_a(click probability)
 #i assume that the quality of the ad is for all 1 (WRONG ASSUMPTION!!!!)
-deltas=[0.8,0.5,.44,0.40,0.35,0.20]
+deltas=[0.4,0.32,0.27,0.22,0.18,0.05]
 
 #this is the best possible auction we can make 
 
