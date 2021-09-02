@@ -1,6 +1,7 @@
 import numpy as np  
 from SocialNetwork.influence_estimation import *
-monetary_value = [0.1, 0.1, 0.1, 0.1, 0.1]
+monetary_value_click = [0.32, 0.48, 0.8, 1.6, 0.4]
+monetary_value_influence = [0.32, 0.48, 0.8, 1.6, 0.4]
 
 def reset_nodes(social_network=None):
     for i in range(0, len(social_network.active_nodes)):
@@ -25,15 +26,21 @@ def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1,
             click_probability = (slot_prominence[slot])*(social_network.weights_fictitious_nodes[node_number])
             social_network.active_nodes[node_number] = np.random.binomial(n=1, p=click_probability)
     
-    social_network.active_nodes = leg_sample(social_network.adj_matrix, social_network.active_nodes)
-    reward = 0
-    count = 0
+    active_by_click_reward = 0
     for i in range (0, len(social_network.active_nodes)):
         if social_network.active_nodes[i] == 1:
-            count+=1
-            reward += monetary_value[social_network.categories[i]-1]
+            active_by_click_reward += monetary_value_click[social_network.categories[i]-1]
+    temporary_array = np.copy(social_network.active_nodes)
 
-    return reward, count
+    social_network.active_nodes = leg_sample(social_network.adj_matrix, social_network.active_nodes)
+
+    active_by_influence_reward = 0
+    temporary_array = social_network.active_nodes - temporary_array
+    for i in range (0, len(temporary_array)):
+        if temporary_array[i] == 1:
+            active_by_influence_reward += monetary_value_influence[social_network.categories[i]-1]
+
+    return active_by_influence_reward + active_by_click_reward
 
 
             
