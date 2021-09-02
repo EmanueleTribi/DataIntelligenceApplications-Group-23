@@ -50,7 +50,7 @@ def estimate_seeds(social_network=None, ad_allocation_list=None, learner_id=1, s
     for _ in range(iterations):
         for node in range(0, adj_matrix.shape[0]):
             category = social_network.categories[node] - 1
-            slot = next((index for index, value in enumerate(ad_allocation_list[category]) if value == learner_id), None)
+            slot = next((index for index, value in enumerate(ad_allocation_list[category]) if value.ad_id == learner_id), None)
 
             if slot != None:
                 click_probability = (slot_prominence[slot])*(social_network.weights_fictitious_nodes[node])

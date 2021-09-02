@@ -114,12 +114,13 @@ def evaluate(n_bids, n_adversaries, social_network_environment):
     return bids
 
 
-social_network = social_network_environment()
-social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
+if __name__ == "__main__":
+    social_network = social_network_environment()
+    social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
 
-all_best_greedy = []
-final = evaluate(n_bids=5, n_adversaries=10, social_network_environment=social_network)
-print(final) 
+    all_best_greedy = []
+    final = evaluate(n_bids=5, n_adversaries=10, social_network_environment=social_network)
+    print(final) 
 
 
 
