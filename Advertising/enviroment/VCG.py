@@ -5,7 +5,7 @@ import operator
 #this is the best possible auction we can make 
 # test probability of observing a slot: equivalent to delta_s(observe prob) q_a(click probability)
 #i assume that the quality of the ad is for all 1 (WRONG ASSUMPTION!!!!)
-deltas=[0.5,0.42,0.38,0.30,0.2,0.05]
+deltas=[0.4,0.32,0.27,0.22,0.18,0.05]
 
 #this is the best possible auction we can make 
 
@@ -29,7 +29,7 @@ class VCG():
 
         best_allocation = []
 
-        for _ in range(0, allocation_length):
+        for i in range(0, allocation_length):
             item = max(ausiliary_array, key=lambda item:item.bid*quality)
             if(item.bid != 0):
                 best_allocation.append(item)
@@ -53,15 +53,12 @@ class VCG():
                 if best_allocation[i][j].ad_id == 1:
                     found = True
                     auxiliary=[]
-
-                    
                     #take the bids without the player and find the new best allocation
-                    #NB - np.delete() removes the INDEX, so we remove the first one - first player
-                    auxiliary = np.delete(bids[i], 0) 
+                    #NB - np.delete() removes the INDEX, so j is right, putting "player" would be wrong
+                    auxiliary = np.delete(bids[i], j) 
                     auxiliary_allocation = self.best_allocation(bids=auxiliary, campaign=i+1, 
                                 social_network=social_network, allocation_length=6) 
-
-
+                    
                     #calculate x_a
                     x_a = 0
                     for k in range(0, len(auxiliary_allocation)):
@@ -90,6 +87,14 @@ class VCG():
         return payments
 
 
+                        
+
+
+
+            
+             
+
+        
     ##function that finds the best allocation of all the campaigns
     def all_best_allocations(self, list_camp_bids, social_network=None):
         best_alloc_all_camp = []
