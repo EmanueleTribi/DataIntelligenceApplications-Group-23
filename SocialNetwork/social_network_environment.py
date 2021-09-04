@@ -3,13 +3,14 @@ import numpy as np
 import json
 from ast import literal_eval
 from random import randint
-from SocialNetwork.activation_probabilities import compute_probabilities
+from SocialNetwork.influence_probabilities import compute_probabilities
+from SocialNetwork.activation_probabilities import *
 from SocialNetwork.network_init import *
 
 class social_network_environment:
 
-    def __init__(self, active_nodes=None, adj_matrix=None, weights_fictitious_nodes=None, 
-            categories=None, features_names=None, features_domain = None, features_instances=None):
+    def __init__(self, active_nodes=None, adj_matrix=None, weights_fictitious_nodes=None, categories=None, 
+            features_names=None, features_domain = None, features_instances=None, activation_probabilities=None):
         self.active_nodes = active_nodes
         self.adj_matrix = adj_matrix
         #self.fictitious_nodes = fictitious_nodes
@@ -19,6 +20,7 @@ class social_network_environment:
         self.features_names = features_names
         self.features_domain = features_domain
         self.features_instances = features_instances
+        self.activation_probabilities = activation_probabilities
 
         self.category_probabilities = {}
 
@@ -79,6 +81,7 @@ class social_network_environment:
                     self.weights_fictitious_nodes.append(self.category_probabilities.get(node_category))
                 
                 compute_probabilities(adj_matrix=self.adj_matrix, categories=self.categories, feature_values=self.features_instances)
+                self.activation_probabilities = activation_probabilities(categories=self.categories, feature_values=self.features_instances)
                 
             except FileNotFoundError:
                 print("File not found - features")
