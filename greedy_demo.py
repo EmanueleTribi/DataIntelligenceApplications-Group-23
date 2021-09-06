@@ -10,18 +10,7 @@ social_network = social_network_environment()
 social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
 deltas=[0.5,0.42,0.38,0.30,0.2,0.05]
 rounds = 5000
-
-## funtion that  returns the marginal increment in the bid of the category passed
-## va fatto il controllo che non sia maggiore di 4
-    #def get_new_bids(self, category):
-       # return self.bids[category]+1
-## function that returns the difference beteen the rewards
-""" def evaluate_marginal(self, previous_reward, actual_reward):
-    return actual_reward - previous_reward
-
-
-def update_bids(self, bids):
-    self.bids = bids """
+seed = 1234
 
 def keep_going_on(marginal_gain, bids): 
     for i in marginal_gain: 
@@ -35,17 +24,13 @@ def keep_going_on(marginal_gain, bids):
     return False
         
 
-def bids_simulation(bids, n_adversaries, n_bids, social_network):
+def bids_simulation(bids, adversary_bids, n_bids, social_network):
     all_bids = []
     all_bids.append(bids)
-    for _ in range(0, n_adversaries): 
-        adversary_bids = []
-        for _ in range(0, n_bids):
-            adversary_bids.append(random.randint(0, 4))
-        all_bids.append(adversary_bids)
+    for elem in adversary_bids:
+        all_bids.append(elem)
 
     ad_allocation_list = setup(bids=all_bids, n_bids=n_bids)
-
     vcg = VCG()
     allocation = vcg.all_best_allocations(list_camp_bids=ad_allocation_list, social_network=social_network)
     payments = vcg.payments(bids=ad_allocation_list, best_allocation=allocation, social_network=social_network)
@@ -70,32 +55,39 @@ def setup(bids, n_bids=5):
 #         [1 0 0 0 0] -> [2 0 0 0 0], [1 1 0 0 0], [1 0 1 0 0], [1 0 0 1 0], [1 0 0 0 1]
 #todo: function to evaluate the marginal gain as it should be (for now it is just a random integer)
 def evaluate(n_bids, n_adversaries, social_network_environment):
-    learner_bids=[0, 0, 0, 0, 0]
+    learner_bids=np.zeros(n_bids)
+    random.seed(seed)
+    adversary_bids = []
+    for _ in range(0, n_adversaries): 
+        adversary_i_bids = []
+        for _ in range(0, n_bids):
+            adversary_i_bids.append(random.randint(0, 4))
+        adversary_bids.append(adversary_i_bids)
     previous_reward = 0
     marginal_gain = np.zeros(n_bids)
     bids = learner_bids
     while keep_going_on(marginal_gain, bids=bids):
-        new_bid = bids
+        new_bid = bids.copy()
         marginal_gain = np.zeros(n_bids)
         for i in range(0, n_bids):
             if new_bid[i] != 4:
                 new_bid[i] += 1
-                #marginal = evaluate_marginal(new_bid)
                 array_rewards=[]
+                
                 for _ in range(rounds):
-                    allocation, payments = bids_simulation(new_bid, n_adversaries=n_adversaries, n_bids=n_bids, social_network=social_network_environment)
-                    
+                    allocation, payments = bids_simulation(new_bid, adversary_bids=adversary_bids, 
+                            n_bids=n_bids, social_network=social_network_environment)
                     reward_temp = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
                             slot_prominence=deltas)
                     reset_nodes(social_network=social_network)
-                    reward = reward_temp - sum(payments)
+                    payments_tot = calculate_total_payment(payments, social_network.categories)
+                    reward = reward_temp - payments_tot
                     array_rewards.append(reward)
                 
                 expected_reward = sum(array_rewards)/len(array_rewards)
-                #print("Expected activated nodes by click are " + str(sum(node_clicked)/len(node_clicked)))
-                #print("Expected activated nodes by influence are " + str(sum(node_influenced)/len(node_influenced)))
+            
                 marginal = expected_reward - previous_reward
-                #print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
                 if marginal < 0:
                     marginal = -1
                 marginal_gain[i] = marginal
@@ -108,16 +100,25 @@ def evaluate(n_bids, n_adversaries, social_network_environment):
         if marginal_gain[max_gain] >= 0:
             bids[max_gain] += 1
         previous_reward += marginal_gain[max_gain]
-        #print("The max gain from the previous iteration was " + str(marginal_gain[max_gain]) + " and the new bids are " + str(bids))
+        if marginal_gain[max_gain] >= 0:
+            to_print = str(marginal_gain[max_gain])
+        else:
+            to_print = "negative"
+        print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
 
-            
     return bids
 
+def calculate_total_payment(payments, categories):
+    payments_tot = 0
+    for element in categories:
+        payments_tot += payments[int(element)-1]
+    return payments_tot
 
 if __name__ == "__main__":
+    
     social_network = social_network_environment()
     social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
-
+    print(max_reward(social_network=social_network))
     all_best_greedy = []
     final = evaluate(n_bids=5, n_adversaries=10, social_network_environment=social_network)
     print(final) 
