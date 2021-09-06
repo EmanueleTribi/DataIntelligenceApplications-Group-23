@@ -40,7 +40,7 @@ class TS_Learner:
         self.update_observations(pulled_arm, reward)
         new=[]
         for i in range(self.n_categories):
-            rew=reward[i]/40
+            rew=reward[i]/36
             
             self.beta_parameters[i, pulled_arm[i].bid, 0] += rew
             self.beta_parameters[i, pulled_arm[i].bid, 1] += 1.0 - rew
