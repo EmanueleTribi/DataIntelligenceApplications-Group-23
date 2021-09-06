@@ -12,6 +12,7 @@ class TS_Learner:
         self.t = 0
         self.collected_rewards = []
         self.prev_reward = np.zeros(n_categories)
+        self.max=40
 
     def update_observations(self, pulled_arm, reward):
         self.collected_rewards.append(reward)
@@ -40,7 +41,7 @@ class TS_Learner:
         self.update_observations(pulled_arm, reward)
         new=[]
         for i in range(self.n_categories):
-            rew=reward[i]/36
+            rew=reward[i]/self.max
             
             self.beta_parameters[i, pulled_arm[i].bid, 0] += rew
             self.beta_parameters[i, pulled_arm[i].bid, 1] += 1.0 - rew
