@@ -14,20 +14,26 @@ def reset_nodes(social_network=None):
     for i in range(0, len(social_network.active_nodes)):
         social_network.active_nodes[i] = 0
 
-def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1, slot_prominence=None):
-    
-    for i in range(0, len(social_network.active_nodes)):
-        category = social_network.categories[i]
+def active_nodes_click(active_nodes, categories, qualities, ad_allocation_list, slot_prominence, learner_id):
+    for i in range(0, len(active_nodes)):
+        category = categories[i]
         node_number = i
         found = False
-        for j in range(0, len(ad_allocation_list[category-1])):
+        for j in range(0, len(ad_allocation_list[int(category)-1])):
             if ad_allocation_list[category-1][j].ad_id == learner_id:
                 found = True
                 slot = j
                 break
         if found:
-            active_probability = (slot_prominence[slot])*(social_network.weights_fictitious_nodes[node_number])
-            social_network.active_nodes[node_number] = np.random.binomial(n=1, p=active_probability)
+            active_probability = (slot_prominence[slot])*(qualities[node_number])
+            active_nodes[node_number] = np.random.binomial(n=1, p=active_probability)
+    return active_nodes
+
+
+def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1, slot_prominence=None):
+    
+    social_network.active_nodes = active_nodes_click(social_network.active_nodes, social_network.categories, 
+                        social_network.weights_fictitious_nodes, ad_allocation_list, slot_prominence, learner_id)
     
     active_by_click_reward = 0
     for i in range (0, len(social_network.active_nodes)):
