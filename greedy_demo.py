@@ -24,9 +24,17 @@ def keep_going_on(marginal_gain, bids):
     return False
         
 
-def bids_simulation(bids, adversary_bids, n_bids, social_network):
+def bids_simulation(bids, n_adversaries, n_bids, social_network):
     all_bids = []
     all_bids.append(bids)
+
+    adversary_bids = []
+    for _ in range(0, n_adversaries): 
+        adversary_i_bids = []
+        for _ in range(0, n_bids):
+            adversary_i_bids.append(random.randint(0, 4))
+        adversary_bids.append(adversary_i_bids)
+
     for elem in adversary_bids:
         all_bids.append(elem)
 
@@ -39,7 +47,6 @@ def bids_simulation(bids, adversary_bids, n_bids, social_network):
 
 def setup(bids, n_bids=5):
     bid_objects = []
-    #print(bids)
     for i in range(0, n_bids):
         j = 1
         category = []
@@ -57,12 +64,6 @@ def setup(bids, n_bids=5):
 def evaluate(n_bids, n_adversaries, social_network_environment):
     learner_bids=np.zeros(n_bids)
     random.seed(seed)
-    adversary_bids = []
-    for _ in range(0, n_adversaries): 
-        adversary_i_bids = []
-        for _ in range(0, n_bids):
-            adversary_i_bids.append(random.randint(0, 4))
-        adversary_bids.append(adversary_i_bids)
     previous_reward = 0
     marginal_gain = np.zeros(n_bids)
     bids = learner_bids
@@ -75,12 +76,12 @@ def evaluate(n_bids, n_adversaries, social_network_environment):
                 array_rewards=[]
                 
                 for _ in range(rounds):
-                    allocation, payments = bids_simulation(new_bid, adversary_bids=adversary_bids, 
+                    allocation, payments = bids_simulation(new_bid, n_adversaries=n_adversaries, 
                             n_bids=n_bids, social_network=social_network_environment)
-                    reward_temp = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
+                    reward_temp, active_by_click_array = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
                             slot_prominence=deltas)
                     reset_nodes(social_network=social_network)
-                    payments_tot = calculate_total_payment(payments, social_network.categories)
+                    payments_tot = calculate_total_payment(payments, social_network.categories, active_by_click_array)
                     reward = reward_temp - payments_tot
                     array_rewards.append(reward)
                 
@@ -108,20 +109,23 @@ def evaluate(n_bids, n_adversaries, social_network_environment):
 
     return bids
 
-def calculate_total_payment(payments, categories):
+def calculate_total_payment(payments, categories, active_by_click_array):
     payments_tot = 0
-    for element in categories:
-        payments_tot += payments[int(element)-1]
+    for i in range(0, len(categories)):
+        if active_by_click_array[i] == 1:
+            payments_tot += payments[int(categories[i])-1]
     return payments_tot
 
 if __name__ == "__main__":
     
     social_network = social_network_environment()
     social_network.init_from_json(json_path_network='Config/network.json', json_path_features='Config/features.json')
-    print(max_reward(social_network=social_network))
     all_best_greedy = []
-    final = evaluate(n_bids=5, n_adversaries=10, social_network_environment=social_network)
-    print(final) 
+    for _ in range(0, 30):
+        final = evaluate(n_bids=5, n_adversaries=10, social_network_environment=social_network)
+        all_best_greedy.append(final) 
+
+    print(all_best_greedy)
 
 
 
