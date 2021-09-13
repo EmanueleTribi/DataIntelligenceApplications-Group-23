@@ -22,6 +22,7 @@ class TS_Learner:
         bid=[]
         values = np.random.beta(self.beta_parameters[:, :, 0], self.beta_parameters[:, :, 1])
         value_bid = np.argmax(values,axis=-1)
+        value_bid=self.arms[value_bid]
         for i in range(len(value_bid)):
             bid.append(Bid(value_bid[i], self.ad_id))
         return bid
@@ -41,10 +42,8 @@ class TS_Learner:
         self.update_observations(pulled_arm, reward)
         new=[]
         for i in range(self.n_categories):
-            rew=reward[i]/self.max
-            
+            rew=reward/self.max
             self.beta_parameters[i, pulled_arm[i].bid, 0] += rew
             self.beta_parameters[i, pulled_arm[i].bid, 1] += 1.0 - rew
-            self.prev_reward[i] = reward[i]
 
 #define a thompson sampling algorithm
