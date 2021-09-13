@@ -21,11 +21,11 @@ def create_features_from_json(json_path_network=None, json_path_features=None):
             verified = [True, False]
             university = ['scientific', 'humanistic', 'other']
             degree = ['none', 'bachelor', 'master', 'phd']
-            features_first = {'features' : {'age' : age, 'gender' : gender}}
-            features_second = {'features' : {'age' : age, 'gender' : gender, 'money' : money}}
-            features_third = {'features' : {'age' : age, 'gender' : gender, 'favouritehobby' : favourite_hobby}}
-            features_fourth = {'features' : {'age' : age, 'gender' : gender, 'public personality' : public_personality, 'verified' : verified}}
-            features_fifth = {'features' : {'age' : age, 'gender' : gender, 'university' : university, 'degree' : degree}}
+            features_first = {'features' : {'age' : age, 'gender' : gender}, 'probability' : 0.4}
+            features_second = {'features' : {'age' : age, 'gender' : gender, 'money' : money}, 'probability' : 0.3}
+            features_third = {'features' : {'age' : age, 'gender' : gender, 'favouritehobby' : favourite_hobby}, 'probability' : 0.5}
+            features_fourth = {'features' : {'age' : age, 'gender' : gender, 'public personality' : public_personality, 'verified' : verified}, 'probability' : 0.2}
+            features_fifth = {'features' : {'age' : age, 'gender' : gender, 'university' : university, 'degree' : degree}, 'probability' : 0.25}
             instances_first = []
             instances_second = []
             instances_third = []
