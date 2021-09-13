@@ -3,15 +3,14 @@ from random import randint
 import json
 from SocialNetwork.network_init import *
 
-def create_features_from_json(json_path_network=None):
+def create_features_from_json(json_path_network=None, json_path_features=None):
     if json_path_network != None:
         try:
 
-            net = Network_creator.fromFilename('network.json')
+            net = Network_creator.fromFilename(json_path_network)
             categories = np.array(net.categories)
             
-            file_path = "features.json"
-            features_file = open(file_path, 'w', encoding='utf-8')
+            features_file = open(json_path_features, 'w', encoding='utf-8')
 
 
             age = ['y', 'm', 'o']

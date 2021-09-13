@@ -17,7 +17,8 @@ class Network_creator:
         if adj_matrix is None:
             self.graph = nx.barabasi_albert_graph(n = nodes, m = start_edges)
             self.categories = np.empty(shape = self.nodes)
-            self.adj_matrix = nx.adjacency_matrix(self.graph)
+            self.adj_matrix = nx.to_numpy_matrix(self.graph)
+
 
             for i in range(self.nodes):
                 self.categories[i] = random.randint(1,5)
@@ -68,8 +69,7 @@ class Network_creator:
         plt.show()
     
     #Creates JSON file storing the adjacency matrix of the Network
-    def generate_json(self):
-        file_path = "network.json"
+    def generate_json(self, file_path):
         network_file = open(file_path, 'w', encoding='utf-8')
 
         net_dict = {"nodes": self.nodes,
