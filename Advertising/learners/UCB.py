@@ -3,6 +3,7 @@ import numpy as np
 import itertools
 import random
 import math
+import time
 from SocialNetwork.cascade import *
 from Advertising.enviroment.VCG import *
 
@@ -31,6 +32,9 @@ def arms_creation(seed=None, number_of_arms=-1):
 def play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_network, deltas, learner_id):
     bounds = []
     expected_values = []
+    click_reward=[[]for i in range(0,len(arms))]
+    influence_rewards=[[]for i in range(0,len(arms))]
+    round_payments=[[]for i in range(0,len(arms))]
     for i in range(0, len(arms)):
         all_bids = []
         all_bids.append(arms[i])
@@ -57,7 +61,13 @@ def play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_netw
         
         expected_values.append(reward)
         reset_nodes(social_network=social_network)
-    return bounds, expected_values
+
+        
+
+        click_reward[i].append(click_rewards)
+        influence_rewards[i].append(reward_influence)
+        round_payments[i].append(payments_tot)
+    return bounds, expected_values, click_reward, influence_rewards, round_payments 
 
 
 
@@ -66,16 +76,17 @@ def play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_netw
 
 def ucb(arms, n_rounds, adversary_bids, active_by_influence_reward, social_network, deltas, learner_id):
     vcg = VCG(deltas=deltas)
-    bounds, expected_values = play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_network, deltas, learner_id)
+    bounds, expected_values, click_reward, influence_rewards, round_payments= play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_network, deltas, learner_id)
     number_of_pulls = [1]*len(arms)
     sum_expected_values = expected_values.copy()
     clairvoyant_value = max_reward(social_network)
     #sum_expected_values = [expected_value/clairvoyant_value for expected_value in sum_expected_values]
     regret=[]
     rewards=[]
+
     for t in range(1, n_rounds):
-        best_arm_value = max(bounds)
-        best_arm_index = bounds.index(best_arm_value)
+
+        best_arm_index = np.argmax(np.add(expected_values, bounds))
         
         all_bids = []
         all_bids.append(arms[best_arm_index])
@@ -103,8 +114,9 @@ def ucb(arms, n_rounds, adversary_bids, active_by_influence_reward, social_netwo
         regret.append(clairvoyant_value - reward)
         sum_expected_values[best_arm_index] += reward
         number_of_pulls[best_arm_index] += 1
+        expected_values = np.divide(sum_expected_values, number_of_pulls)
         for i in range(0, len(bounds)):
-            bounds[i] = (sum_expected_values[i]/number_of_pulls[i]) + math.sqrt(2*math.log(t+1)/number_of_pulls[i])
+            bounds[i] = math.sqrt(2*np.log(t+1)/number_of_pulls[i])
         if t%10000 == 0:
             pass
             print("Round number " + str(t))
@@ -112,9 +124,10 @@ def ucb(arms, n_rounds, adversary_bids, active_by_influence_reward, social_netwo
         reset_nodes(social_network=social_network)
         
         
-    
-    best_arm_value = max(bounds)
-    best_arm_index = bounds.index(best_arm_value)
+        click_reward[best_arm_index].append(click_rewards)
+        influence_rewards[best_arm_index].append(reward_influence)
+        round_payments[best_arm_index].append(payments_tot)
+    best_arm_index = np.argmax(expected_values)
 
     
-    return arms[best_arm_index], sum_expected_values, number_of_pulls, best_arm_index, bounds
+    return arms[best_arm_index], expected_values, number_of_pulls, best_arm_index, bounds, click_reward, influence_rewards, round_payments
