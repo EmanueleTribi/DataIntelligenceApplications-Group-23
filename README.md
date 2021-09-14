@@ -4,15 +4,23 @@ Repository per il progetto di Data and Intelligence Applications
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
-| Environment Social Network | [Y](#) ToComplete |
-| Environment SN: substitute get with fromFileName method | [X](#) |
+| Environment Social Network | [Y](#)|
+| Environment SN: substitute get with fromFileName method | [Y](#) |
 | Environment SN: features| [Y](#) |
 | Environment SN initialisation| [Y](#) |
-| Environment Advertising | [X](#) |
-| Environment ADV initialisation | [X](#) |
-| Monte Carlo influence estimation (step 1) | [X](#) |
-| Link probability estimation (step 4)| [X](#) |
-| Influence maximization (step 4 ?) | [X](#) |
+| Environment Advertising | [Y](#) |
+| Environment ADV initialisation | [Y](#) |
+| Monte Carlo influence estimation (step 1) | [Y](#) |
+| Optimization problem (step 2) | [Y](#) |
+| Greedy Learner (step 3) | [Y](#) |
+| UCB (step 4)| [X](#) Working on it... |
+| TS (step 4) | [X](#) Working on it... |
+| Cascading (step 4) | [X](#) No idea yet |
+| UCB (step 5) | [X](#) Working on it... |
+| TS (step 5) | [X](#)|
+| Sliding windows (step 6) | [X](#)|
+
+
 
 
 ## Project assignment: Advertising and Social influence
