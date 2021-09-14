@@ -13,3 +13,6 @@ Advertising/enviroment/__pycache__/bid.cpython-39.pyc
 .gitignore
 .gitignore
 *.pyc
+bandit_demo.ipynb
+network_demo.ipynb
+greedy_plot.ipynb

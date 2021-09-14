@@ -20,17 +20,12 @@ def keep_going_on(marginal_gain, bids):
         return True
     return False
         
-
-def bids_simulation(bids, n_adversaries, n_bids, social_network):
+## Version 1: simulates bids of adversaries at every call
+## Version 2: takes as input a fixed set of adversary bids, no random generation of bids
+def bids_simulation(bids, adversary_bids, n_bids, social_network):
     all_bids = []
     all_bids.append(bids)
 
-    adversary_bids = []
-    for _ in range(0, n_adversaries): 
-        adversary_i_bids = []
-        for _ in range(0, n_bids):
-            adversary_i_bids.append(random.randint(0, 4))
-        adversary_bids.append(adversary_i_bids)
 
     for elem in adversary_bids:
         all_bids.append(elem)
@@ -56,11 +51,24 @@ def setup(bids, n_bids=5):
     
 def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
     learner_bids=np.zeros(n_bids)
+
     random.seed(seed)
+
     previous_reward = 0
+    rewards = []
     marginal_gain = np.zeros(n_bids)
     bids = learner_bids
+
+    adversary_bids = []
+    for _ in range(0, n_adversaries): 
+        adversary_i_bids = []
+        for _ in range(0, n_bids):
+            adversary_i_bids.append(random.randint(0, 4))
+        adversary_bids.append(adversary_i_bids)
+    
+
     while keep_going_on(marginal_gain, bids=bids):
+        rewards.append(previous_reward)
         new_bid = bids.copy()
         marginal_gain = np.zeros(n_bids)
         for i in range(0, n_bids):
@@ -69,7 +77,7 @@ def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
                 array_rewards=[]
                 
                 for _ in range(rounds):
-                    allocation, payments = bids_simulation(new_bid, n_adversaries=n_adversaries, 
+                    allocation, payments = bids_simulation(new_bid, adversary_bids= adversary_bids, 
                             n_bids=n_bids, social_network=social_network)
                     reward_temp, active_by_click_array = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
                             slot_prominence=deltas)
@@ -100,7 +108,7 @@ def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
             to_print = "negative"
         print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
 
-    return bids
+    return bids,rewards
 
 def calculate_total_payment(payments, categories, active_by_click_array):
     payments_tot = 0
