@@ -13,7 +13,7 @@ class UCB_Learner():
         self.count = np.zeros((n_categories, n_arms)) # counting of how many time an arm in pulled in each category
         self.collected_rewards = []
         self.t = 0 #number of executions
-        self.c = 5.0  # exploration factor
+        self.c = 2.0  # exploration factor
 
     def pull_arm(self):
         ucb = self.empirical_mean+self.confidence
