@@ -1,5 +1,6 @@
 from Advertising.learners.greedyLearner import *
 import numpy as np
+from pprint import pprint
 import itertools
 import random
 import math
@@ -16,8 +17,9 @@ def arms_creation(seed=None, number_of_arms=-1):
             arms.append(list(i))
     else: 
         arms=[]
+        random.seed(seed)
         for i in range(0, number_of_arms):
-            random.seed(seed)
+            
             arm = []
             for i in range(0, 5):
                 arm.append(random.randint(0, 4))
@@ -31,13 +33,13 @@ def arms_creation(seed=None, number_of_arms=-1):
 def play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_network, deltas, learner_id, only_first=False):
     bounds = []
     expected_values = []
+    print(arms)
     for i in range(0, len(arms)):
         all_bids = []
         all_bids.append(arms[i])
         for element in adversary_bids:
             all_bids.append(element)
         ad_allocation_list = setup(bids=all_bids)
-        
         best_allocation = vcg.all_best_allocations(ad_allocation_list, social_network)
 
         if only_first:
@@ -49,7 +51,7 @@ def play_once(vcg, arms, adversary_bids, active_by_influence_reward, social_netw
                         temp_allocation[k].ad_id = None
                         best_allocation[j] = temp_allocation
 
-
+        
         payments = vcg.payments(ad_allocation_list, best_allocation, social_network)
         active_nodes, click_rewards = active_nodes_click(social_network, best_allocation, deltas, learner_id)
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
