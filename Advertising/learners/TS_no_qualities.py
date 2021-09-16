@@ -73,10 +73,11 @@ def test(learner, arms, adversary_bids, only_first, active_by_influence_reward, 
                 reward_influence += active_by_influence_reward[i]
             reward_influence = (reward_influence/len(indexes) + reward_influence)/2                
             reward = (click_rewards + reward_influence - payments_tot)
-        if i==1:
-            thing_to_plot.append(reward)
-        else:
-            thing_to_plot.append((reward+thing_to_plot[-1]*(i-1))/i)    
+        thing_to_plot=[]
+        # if i==1:
+        #     thing_to_plot.append(reward)
+        # else:
+        #     thing_to_plot.append((reward+thing_to_plot[-1]*(i-1))/i)    
         number_of_pulls[pulled_arm] += 1
         sum_expected_values[pulled_arm] += reward
         expected_values[pulled_arm] = sum_expected_values[pulled_arm]/number_of_pulls[pulled_arm]
