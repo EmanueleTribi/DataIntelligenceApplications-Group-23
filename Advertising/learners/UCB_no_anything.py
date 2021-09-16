@@ -26,6 +26,7 @@ def arms_creation(seed=None, number_of_arms=-1):
                 for i in range(0, 5):
                     arm.append(random.randint(0, 4))
             arms.append(arm)
+            
     return arms
 
 
@@ -61,7 +62,7 @@ def play_once(vcg, arms, adversary_bids, social_network, deltas, learner_id, onl
 
         reward = (total_reward-payments_tot)
         
-        bounds.append(reward)
+        bounds.append(0)
         
         expected_values.append(reward)
         reset_nodes(social_network=social_network)
@@ -81,16 +82,29 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
     bounds, expected_values = play_once(vcg, arms, adversary_bids, social_network, deltas, learner_id, only_first)
     number_of_pulls = [1]*len(arms)
     sum_expected_values = expected_values.copy()
+    thing_to_plot=[]
     for t in range(1, n_rounds):
 
         best_arm_index = np.argmax(np.add(expected_values, bounds))
         
+
+
         all_bids = []
         all_bids.append(arms[best_arm_index])
         for element in adversary_bids:
             all_bids.append(element)
         ad_allocation_list = setup(bids=all_bids, n_bids=5)
         best_allocation = vcg.all_best_allocations(ad_allocation_list, social_network)
+
+        if only_first:
+            for j in range(0, len(best_allocation)):
+                temp_allocation = []
+                temp_allocation = best_allocation[j]
+                for k in range(0, len(best_allocation[j])):
+                    if temp_allocation[k].ad_id == 1 and k != 0:
+                        temp_allocation[k].ad_id = None
+                        best_allocation[j] = temp_allocation
+                        
         payments = vcg.payments(ad_allocation_list, best_allocation, social_network)
 
 
@@ -99,6 +113,10 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
         
         reward = total_reward - payments_tot
+        if t==1:
+            thing_to_plot.append(reward)
+        else:
+            thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
         sum_expected_values[best_arm_index] += reward
         number_of_pulls[best_arm_index] += 1
         expected_values[best_arm_index] = sum_expected_values[best_arm_index]/number_of_pulls[best_arm_index]
@@ -111,5 +129,5 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
     best_arm_index = np.argmax(expected_values)
 
     
-    return arms[best_arm_index], expected_values, number_of_pulls, best_arm_index, bounds
+    return arms[best_arm_index], expected_values, number_of_pulls, best_arm_index, bounds, thing_to_plot
 
