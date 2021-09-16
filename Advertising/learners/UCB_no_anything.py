@@ -95,6 +95,16 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
             all_bids.append(element)
         ad_allocation_list = setup(bids=all_bids, n_bids=5)
         best_allocation = vcg.all_best_allocations(ad_allocation_list, social_network)
+
+        if only_first:
+            for j in range(0, len(best_allocation)):
+                temp_allocation = []
+                temp_allocation = best_allocation[j]
+                for k in range(0, len(best_allocation[j])):
+                    if temp_allocation[k].ad_id == 1 and k != 0:
+                        temp_allocation[k].ad_id = None
+                        best_allocation[j] = temp_allocation
+                        
         payments = vcg.payments(ad_allocation_list, best_allocation, social_network)
 
 
