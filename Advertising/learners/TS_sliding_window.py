@@ -8,9 +8,9 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
     clairvoyants = []
     clair_ex = []
     vcg = VCG(lambdas)
-    number_of_pulls = [0]*len(arms)
-    sum_expected_values = [0]*len(arms)
-    expected_values = [0]*len(arms)
+    number_of_pulls = np.zeros(len(arms))
+    sum_expected_values = np.zeros(len(arms))
+    expected_values = np.zeros(len(arms))
     thing_to_plot = []
     thing_to_plot.append(0)
     t = 0
@@ -25,11 +25,11 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
                     adversary_i_bids.append(random.randint(0, 4))
                 adversary_bids.append(adversary_i_bids)
             clairvoyants.append(np.argmax(expected_values))
-            clair_ex.append(expected_values[np.argmax(expected_values)])
+            clair_ex.append(np.max(expected_values))
            
-            sum_expected_values = [0]*len(arms)
-            expected_values = [0]*len(arms)
-            number_of_pulls = [0]*len(arms)
+            sum_expected_values = np.zeros(len(arms))
+            expected_values = np.zeros(len(arms))
+            number_of_pulls = np.zeros(len(arms))
 
             t = 0
         arm_learner, pulled_arm = learner.pull_arm()
@@ -69,8 +69,6 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
         if i > 0:
             thing_to_plot.append((reward+thing_to_plot[-1]*(i-1))/i)
 
-        #rew = reward-np.sum(payments_tot)
-
         number_of_pulls[pulled_arm] += 1
         sum_expected_values[pulled_arm] += reward
         expected_values[pulled_arm] = sum_expected_values[pulled_arm]/ number_of_pulls[pulled_arm]
@@ -81,9 +79,7 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
 
     best_arm_index = np.argmax(expected_values)
     clairvoyants.append(np.argmax(expected_values))
-    clair_ex.append(expected_values[np.argmax(expected_values)])
+    clair_ex.append(np.max(expected_values))
 
-    print(expected_values)
-    print(best_arm_index)
 
     return arms[best_arm_index], best_arm_index, number_of_pulls, expected_values, thing_to_plot, clairvoyants, clair_ex
