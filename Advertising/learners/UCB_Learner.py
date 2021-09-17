@@ -29,6 +29,8 @@ class UCB_Learner:
 
     def update(self, pulled_arm_idx, reward):
         self.t+=1
+        self.collected_rewards.append(reward)
+
         pulls = self.n_pulls[pulled_arm_idx]
 
         for i in range(self.n_arms):
@@ -36,4 +38,4 @@ class UCB_Learner:
         
         self.exp_values[pulled_arm_idx] = (self.exp_values[pulled_arm_idx] * (pulls-1) + reward)/pulls
 
-        self.collected_rewards.append(reward)
+        
