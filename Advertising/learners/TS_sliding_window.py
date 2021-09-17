@@ -1,6 +1,6 @@
 from Advertising.enviroment.VCG import *
 from SocialNetwork.cascade import *
-from Advertising.learners.greedyLearner import *
+from Advertising.learners.Greedy_algorithm import *
 
 import random
 

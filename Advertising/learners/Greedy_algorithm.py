@@ -1,6 +1,3 @@
-import numpy as np
-import numpy as np
-from random import randint
 from SocialNetwork.influence_estimation import *
 from SocialNetwork.cascade import *
 from SocialNetwork.social_network_environment import *
@@ -9,56 +6,15 @@ from Advertising.enviroment.VCG import *
 n_rounds = 5000
 deltas=[0.5,0.42,0.38,0.30,0.2,0.05]
 
-def keep_going_on(marginal_gain, bids): 
-    for i in marginal_gain: 
-        if i >= 0: 
-            return True
-    for i in range(0, len(bids)): 
-        if bids[i] > 0: 
-            break
-    if i == len(bids):
-        return True
-    return False
-        
-## Version 1: simulates bids of adversaries at every call
-## Version 2: takes as input a fixed set of adversary bids, no random generation of bids
-def bids_simulation(bids, adversary_bids, n_bids, social_network):
-    all_bids = []
-    all_bids.append(bids)
-
-
-    for elem in adversary_bids:
-        all_bids.append(elem)
-
-    ad_allocation_list = setup(bids=all_bids, n_bids=n_bids)
-    vcg = VCG()
-    allocation = vcg.all_best_allocations(list_camp_bids=ad_allocation_list, social_network=social_network)
-    payments = vcg.payments(bids=ad_allocation_list, best_allocation=allocation, social_network=social_network)
-
-    return allocation, payments
-
-def setup(bids, n_bids=5):
-    bid_objects = []
-    for i in range(0, n_bids):
-        j = 1
-        category = []
-        for elem in bids: 
-            bid = Bid(bid=elem[i], id = j)
-            category.append(bid)
-            j+=1
-        bid_objects.append(category)
-    return bid_objects 
+#Greedy algorithm 
+def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
     
-def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
     learner_bids=np.zeros(n_bids)
-
     random.seed(seed)
-
     previous_reward = 0
     rewards = []
     marginal_gain = np.zeros(n_bids)
     bids = learner_bids
-
     adversary_bids = []
     for _ in range(0, n_adversaries): 
         adversary_i_bids = []
@@ -89,7 +45,7 @@ def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
                 expected_reward = sum(array_rewards)/len(array_rewards)
             
                 marginal = expected_reward - previous_reward
-                print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                #print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
                 if marginal < 0:
                     marginal = -1
                 marginal_gain[i] = marginal
@@ -106,17 +62,52 @@ def evaluate(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
             to_print = str(marginal_gain[max_gain])
         else:
             to_print = "negative"
-        print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
+        #print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
 
     return bids,rewards
 
-def calculate_total_payment(payments, categories, active_by_click_array):
-    payments_tot = 0
-    for i in range(0, len(categories)):
-        if active_by_click_array[i] == 1:
-            payments_tot += payments[int(categories[i])-1]
-    return payments_tot
 
+
+#Function to check if we should go on with our algorithm or we reached the end
+def keep_going_on(marginal_gain, bids): 
+    for i in marginal_gain: 
+        if i >= 0: 
+            return True
+    for i in range(0, len(bids)): 
+        if bids[i] > 0: 
+            break
+    if i == len(bids):
+        return True
+    return False
+
+#Little function to set up everything for the algorithm and returns best allocation and payments
+def bids_simulation(bids, adversary_bids, n_bids, social_network):
+    all_bids = []
+    all_bids.append(bids)
+
+    for elem in adversary_bids:
+        all_bids.append(elem)
+
+    ad_allocation_list = setup(bids=all_bids, n_bids=n_bids)
+    vcg = VCG()
+    allocation = vcg.all_best_allocations(list_camp_bids=ad_allocation_list, social_network=social_network)
+    payments = vcg.payments(bids=ad_allocation_list, best_allocation=allocation, social_network=social_network)
+
+    return allocation, payments
+
+
+#Auxiliary function for the "bids_simulation" one, which is needed to create the Bids objects
+def setup(bids, n_bids=5):
+    bid_objects = []
+    for i in range(0, n_bids):
+        j = 1
+        category = []
+        for elem in bids: 
+            bid = Bid(bid=elem[i], id = j)
+            category.append(bid)
+            j+=1
+        bid_objects.append(category)
+    return bid_objects 
     
 
 

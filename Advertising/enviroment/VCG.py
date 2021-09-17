@@ -1,6 +1,4 @@
-from itertools import combinations,permutations
 import numpy as np
-import operator
 
 #this is the best possible auction we can make 
 # test probability of observing a slot: equivalent to delta_s(observe prob) q_a(click probability)
@@ -99,23 +97,3 @@ class VCG():
 
         #for now I wont return the payments since they have to be done better
         return best_alloc_all_camp#, self.payments(bids=list_camp_bids, best_allocation=best_alloc_all_camp)
-
-
-'''
-##this is the payment function 
-## take in input the payment for a single ad (the bid)
-# and the list of all bids, necessary to calculate the VCG payment function
-    def payments(self, bids):
-        best_allo=self.best_allocation(bids)
-        xa=np.inner(self.deltas,np.array(best_allo))
-        ya=0
-        newbids=bids[:]
-        for e in newbids:
-            if e.ad_id==bid.ad_id:
-                newbids.remove(e)
-                break    
-        ya=np.inner(self.deltas,np.array(self.best_allocation(newbids)))
-
-        payment=(xa-ya)/deltas[best_allo.index(bid)]
-        return payment
-'''

@@ -1,4 +1,4 @@
-from Advertising.learners.greedyLearner import *
+from Advertising.learners.Greedy_algorithm import *
 import matplotlib.pyplot as plt
 import numpy as np
 from SocialNetwork.social_network_environment import *
