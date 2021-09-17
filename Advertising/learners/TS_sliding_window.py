@@ -4,34 +4,21 @@ from Advertising.learners.Greedy_algorithm import *
 
 import random
 
-def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, social_network, sw_size):
-    clairvoyants = []
-    clair_ex = []
+def test_sw(learner, arms, list_adv_bids, only_first,  n_rounds, lambdas, social_network, interval):
     vcg = VCG(lambdas)
     number_of_pulls = np.zeros(len(arms))
     sum_expected_values = np.zeros(len(arms))
     expected_values = np.zeros(len(arms))
     thing_to_plot = []
     thing_to_plot.append(0)
-    t = 0
+    adversary_bids = []
+    times_change = 0
     for i in range(0, n_rounds):
-        t += 1
+        if i %interval == 0: 
+            adversary_bids = list_adv_bids[times_change]
+            times_change += 1
+            thing_to_plot.append(0)
 
-        if t > sw_size:
-            adversary_bids = []
-            for _ in range(0, 10):
-                adversary_i_bids = []
-                for __ in range(0, 5):
-                    adversary_i_bids.append(random.randint(0, 4))
-                adversary_bids.append(adversary_i_bids)
-            clairvoyants.append(np.argmax(expected_values))
-            clair_ex.append(np.max(expected_values))
-           
-            sum_expected_values = np.zeros(len(arms))
-            expected_values = np.zeros(len(arms))
-            number_of_pulls = np.zeros(len(arms))
-
-            t = 0
         arm_learner, pulled_arm = learner.pull_arm()
 
 
@@ -78,8 +65,6 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
         reset_nodes(social_network=social_network)
 
     best_arm_index = np.argmax(expected_values)
-    clairvoyants.append(np.argmax(expected_values))
-    clair_ex.append(np.max(expected_values))
 
 
-    return arms[best_arm_index], best_arm_index, number_of_pulls, expected_values, thing_to_plot, clairvoyants, clair_ex
+    return arms[best_arm_index], best_arm_index, number_of_pulls, expected_values, thing_to_plot
