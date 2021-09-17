@@ -26,7 +26,7 @@ def arms_creation(seed=None, number_of_arms=-1):
     return arms
 
 
-def ts(learner, arms, adversary_bids, only_first, active_by_influence_reward, n_rounds, lambdas, social_network):
+def ts(learner, arms, adversary_bids, only_first, n_rounds, lambdas, social_network):
     
     vcg = VCG(lambdas)
     number_of_pulls = [0]*len(arms)
