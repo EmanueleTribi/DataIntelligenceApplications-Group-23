@@ -16,7 +16,6 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
     t = 0
     for i in range(0, n_rounds):
         t += 1
-        arm_learner, pulled_arm = learner.pull_arm()
 
         if t > sw_size:
             adversary_bids = []
@@ -27,7 +26,14 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
                 adversary_bids.append(adversary_i_bids)
             clairvoyants.append(np.argmax(expected_values))
             clair_ex.append(expected_values[np.argmax(expected_values)])
+           
+            sum_expected_values = [0]*len(arms)
+            expected_values = [0]*len(arms)
+            number_of_pulls = [0]*len(arms)
+
             t = 0
+        arm_learner, pulled_arm = learner.pull_arm()
+
 
         all_bids = []
         all_bids.append(arm_learner)
@@ -67,8 +73,7 @@ def test_sw(learner, arms, adversary_bids, only_first,  n_rounds, lambdas, socia
 
         number_of_pulls[pulled_arm] += 1
         sum_expected_values[pulled_arm] += reward
-        expected_values[pulled_arm] = sum_expected_values[pulled_arm] / \
-            number_of_pulls[pulled_arm]
+        expected_values[pulled_arm] = sum_expected_values[pulled_arm]/ number_of_pulls[pulled_arm]
 
     # updating of the learners
         learner.update(pulled_arm, reward, number_of_pulls)
