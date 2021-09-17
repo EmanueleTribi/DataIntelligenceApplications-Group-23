@@ -83,8 +83,10 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
     number_of_pulls = [1]*len(arms)
     sum_expected_values = expected_values.copy()
     thing_to_plot=[]
+    thing_to_plot.append(0)
+    all_bounds_escalation = [[]for _ in range(0, len(arms))]
     for t in range(1, n_rounds):
-
+        
         best_arm_index = np.argmax(np.add(expected_values, bounds))
         
 
@@ -113,21 +115,20 @@ def ucb(arms, n_rounds, adversary_bids, social_network, deltas, learner_id, only
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
         
         reward = total_reward - payments_tot
-        if t==1:
-            thing_to_plot.append(reward)
-        else:
-            thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
+        
+        thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
         sum_expected_values[best_arm_index] += reward
         number_of_pulls[best_arm_index] += 1
         expected_values[best_arm_index] = sum_expected_values[best_arm_index]/number_of_pulls[best_arm_index]
 
         for i in range(0, len(bounds)):
             bounds[i] = exploration_hyperparameter*math.sqrt(np.log(t+1)/number_of_pulls[i])
+            all_bounds_escalation[i].append(bounds[i])
 
         reset_nodes(social_network=social_network)
         
     best_arm_index = np.argmax(expected_values)
 
     
-    return arms[best_arm_index], expected_values, number_of_pulls, best_arm_index, bounds, thing_to_plot
+    return arms[best_arm_index], expected_values, number_of_pulls, best_arm_index, bounds, thing_to_plot, all_bounds_escalation
 

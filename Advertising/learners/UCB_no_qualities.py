@@ -87,6 +87,7 @@ def ucb_no_qualities(arms, n_rounds, adversary_bids, active_by_influence_reward,
     number_of_pulls = [1]*len(arms)
     sum_expected_values = expected_values.copy()
     thing_to_plot=[]
+    thing_to_plot.append(0)
     for t in range(1, n_rounds):
 
         best_arm_index = np.argmax(np.add(expected_values, bounds))
@@ -123,10 +124,8 @@ def ucb_no_qualities(arms, n_rounds, adversary_bids, active_by_influence_reward,
                 reward_influence += active_by_influence_reward[i]
             reward_influence = reward_influence/len(indexes)# + reward_influence)/2
             reward = (click_rewards + reward_influence - payments_tot)
-        if t==1:
-            thing_to_plot.append(reward)
-        else:
-            thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
+        
+        thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
         sum_expected_values[best_arm_index] += reward
         number_of_pulls[best_arm_index] += 1
         expected_values[best_arm_index] = sum_expected_values[best_arm_index]/number_of_pulls[best_arm_index]
