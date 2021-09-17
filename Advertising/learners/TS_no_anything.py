@@ -26,7 +26,7 @@ def arms_creation(seed=None, number_of_arms=-1):
     return arms
 
 
-def ts_no_qualities(learner, arms, adversary_bids, only_first, active_by_influence_reward, n_rounds, lambdas, social_network):
+def ts(learner, arms, adversary_bids, only_first, active_by_influence_reward, n_rounds, lambdas, social_network):
     
     vcg = VCG(lambdas)
     number_of_pulls = [0]*len(arms)
@@ -57,28 +57,24 @@ def ts_no_qualities(learner, arms, adversary_bids, only_first, active_by_influen
 
 
                        
-        active_nodes, click_rewards = active_nodes_click( social_network, best_allocation, lambdas, 1)
         payments = vcg.payments(ad_allocation_list, best_allocation, social_network=social_network)
     # with this part of code i set that if the learner is present in the allocation list then get the normal allocation
     # reward, if it's not present and it bids 0 then the reward is 0.
+        
+        total_reward, active_nodes = activate_cascade(social_network=social_network, ad_allocation_list=best_allocation, slot_prominence=deltas)
+       
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
 
-        
-        reward = 0
-        reward_influence = 0
-        indexes = np.where(active_nodes == 1)[0]
-
-        if len(indexes) != 0:
-            for i in range(0, len(indexes)):
-                reward_influence += active_by_influence_reward[i]
-            reward_influence = (reward_influence/len(indexes) + reward_influence)/2                
-            reward = (click_rewards + reward_influence - payments_tot)
-        
+        reward = total_reward - payments_tot
         if t==0:
             thing_to_plot.append(reward)
         else:
             thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
-   
+        
+        # if i==1:
+        #     thing_to_plot.append(reward)
+        # else:
+        #     thing_to_plot.append((reward+thing_to_plot[-1]*(i-1))/i)    
         number_of_pulls[pulled_arm] += 1
         sum_expected_values[pulled_arm] += reward
         expected_values[pulled_arm] = sum_expected_values[pulled_arm]/number_of_pulls[pulled_arm]
