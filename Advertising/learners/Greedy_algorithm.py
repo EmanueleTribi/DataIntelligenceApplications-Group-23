@@ -57,8 +57,7 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
         max_gain = np.argmax(a = marginal_gain)
         if marginal_gain[max_gain] >= 0:
             bids[max_gain] += 1
-        previous_reward += marginal_gain[max_gain]
-        if marginal_gain[max_gain] >= 0:
+            previous_reward += marginal_gain[max_gain]
             to_print = str(marginal_gain[max_gain])
         else:
             to_print = "negative"

@@ -1,4 +1,4 @@
-from Advertising.learners.greedyLearner import *
+from Advertising.learners.Greedy_algorithm import *
 import numpy as np
 import itertools
 import random

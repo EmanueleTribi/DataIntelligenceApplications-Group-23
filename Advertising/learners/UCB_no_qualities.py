@@ -1,4 +1,4 @@
-from Advertising.learners.greedyLearner import *
+from Advertising.learners.Greedy_algorithm import *
 import numpy as np
 from pprint import pprint
 import itertools
@@ -56,15 +56,15 @@ def play_once_no_qualities(vcg, arms, adversary_bids, active_by_influence_reward
         active_nodes, click_rewards = active_nodes_click(social_network, best_allocation, deltas, learner_id)
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
 
-        reward=0
+        reward = click_rewards - payments_tot
         reward_influence = 0
         indexes = np.where(active_nodes == 1)[0]
         
         if len(indexes) != 0:
             for i in range(0, len(indexes)):
-                reward_influence += active_by_influence_reward[i]
-            reward_influence = reward_influence/len(indexes) #+ reward_influence)/2
-            reward = (click_rewards + reward_influence - payments_tot)
+                reward_influence += active_by_influence_reward[indexes[i]]
+            reward_influence = reward_influence/len(indexes)
+            reward += reward_influence
         
         bounds.append(reward)
         
@@ -115,15 +115,15 @@ def ucb_no_qualities(arms, n_rounds, adversary_bids, active_by_influence_reward,
         active_nodes, click_rewards = active_nodes_click(social_network, best_allocation, deltas, learner_id)
         payments_tot = calculate_total_payment(payments, social_network.categories, active_nodes)
 
-        reward = 0
+        reward = click_rewards - payments_tot
         reward_influence = 0
         indexes = np.where(active_nodes == 1)[0]
 
         if len(indexes) != 0:
             for i in range(0, len(indexes)):
-                reward_influence += active_by_influence_reward[i]
-            reward_influence = reward_influence/len(indexes)# + reward_influence)/2
-            reward = (click_rewards + reward_influence - payments_tot)
+                reward_influence += active_by_influence_reward[indexes[i]]
+            reward_influence = reward_influence/len(indexes)
+            reward += reward_influence
         
         thing_to_plot.append((reward+thing_to_plot[-1]*(t-1))/t)
         sum_expected_values[best_arm_index] += reward
