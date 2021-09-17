@@ -13,6 +13,8 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
     random.seed(seed)
     previous_reward = 0
     rewards = []
+    marginals = []
+    marginals.append(0)
     marginal_gain = np.zeros(n_bids)
     bids = learner_bids
     adversary_bids = []
@@ -23,7 +25,7 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
         adversary_bids.append(adversary_i_bids)
     
 
-    while keep_going_on(marginal_gain, bids=bids):
+    while keep_going_on(marginal_gain, bids=bids) or previous_reward == 0:
         rewards.append(previous_reward)
         new_bid = bids.copy()
         marginal_gain = np.zeros(n_bids)
@@ -31,46 +33,59 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
             if new_bid[i] != 4:
                 new_bid[i] += 1
                 array_rewards=[]
-                
-                for _ in range(rounds):
-                    allocation, payments = bids_simulation(new_bid, adversary_bids= adversary_bids, 
+                allocation, payments = bids_simulation(new_bid, adversary_bids= adversary_bids, 
                             n_bids=n_bids, social_network=social_network)
-                    reward_temp, active_by_click_array = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
-                            slot_prominence=deltas)
-                    reset_nodes(social_network=social_network)
-                    payments_tot = calculate_total_payment(payments, social_network.categories, active_by_click_array)
-                    reward = reward_temp - payments_tot
-                    array_rewards.append(reward)
+                present = False
+                for bid_in_category in allocation[i]:
+                    if bid_in_category.ad_id == 1:
+                        present=True
+
+                if present:
+                    for _ in range(rounds):
+                        
+                        reward_temp, active_by_click_array = activate_cascade(social_network=social_network, ad_allocation_list=allocation, 
+                                slot_prominence=deltas)
+                        reset_nodes(social_network=social_network)
+                        payments_tot = calculate_total_payment(payments, social_network.categories, active_by_click_array)
+                        reward = reward_temp - payments_tot
+                        array_rewards.append(reward)
+                    
+                    expected_reward = sum(array_rewards)/len(array_rewards)
                 
-                expected_reward = sum(array_rewards)/len(array_rewards)
-            
-                marginal = expected_reward - previous_reward
-                #print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
-                if marginal < 0:
-                    marginal = -1
-                marginal_gain[i] = marginal
-                new_bid[i] -= 1
+                    marginal = expected_reward - previous_reward
+                    print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                    if marginal < 0:
+                        marginal = -1
+                    marginal_gain[i] = marginal
+                    new_bid[i] -= 1
+                else:
+                    marginal = 0
+                    marginal_gain[i] = 0
+                    
+                    print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                    new_bid[i] -= 1
             else: 
                 marginal = -2
                 marginal_gain[i] = marginal
 
         max_gain = np.argmax(a = marginal_gain)
-        if marginal_gain[max_gain] >= 0:
+        if marginal_gain[max_gain] > 0:
             bids[max_gain] += 1
             previous_reward += marginal_gain[max_gain]
             to_print = str(marginal_gain[max_gain])
+            marginals.append(marginal_gain[max_gain])
         else:
             to_print = "negative"
-        #print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
+        print("The max gain from the previous iteration was " + to_print + " and the new bids are " + str(bids))
 
-    return bids,rewards
+    return bids,rewards,marginals
 
 
 
 #Function to check if we should go on with our algorithm or we reached the end
 def keep_going_on(marginal_gain, bids): 
     for i in marginal_gain: 
-        if i >= 0: 
+        if i > 0: 
             return True
     for i in range(0, len(bids)): 
         if bids[i] > 0: 
