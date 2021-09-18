@@ -1,19 +1,17 @@
 import numpy as np
 import math
-from Advertising.learners.UCB_Learner import *
+from Advertising.learners.UCB_sw import *
 from SocialNetwork.cascade import *
 
-class UCB_Learner_qualities(UCB_Learner):
-
-    def __init__(self, arms, hyperpar, social_network,estimation_rounds = 2000):
-        super().__init__(arms, hyperpar)
+class UCB_sw_qualities(UCB_sw):
+    def __init__(self, arms, hyperpar, window_size, social_network, estimation_rounds):
+        super().__init__(arms, hyperpar, window_size)
         self.nodes_estimation = compute_array_estimated_influence(social_network=social_network, rounds=estimation_rounds)
-    
 
-    # seeds it's supposed to be an array of indexes denoting the active nodes (the ones who clicked)
+    
     def update(self, pulled_arm_idx, reward, seeds):
-        
-        # Here estimating the reward using the pre-computed influences
+
+         # Here estimating the reward using the pre-computed influences
         reward_influence = 0
         if len(seeds) != 0:
             for i in range(0, len(seeds)):
@@ -22,5 +20,6 @@ class UCB_Learner_qualities(UCB_Learner):
             estimated_reward = reward + reward_influence
         else:
             estimated_reward = 0
-        
+
         super().update(pulled_arm_idx, estimated_reward)
+        

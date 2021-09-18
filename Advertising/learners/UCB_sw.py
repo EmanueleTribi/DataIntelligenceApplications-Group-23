@@ -32,7 +32,7 @@ class UCB_sw(UCB_Learner):
 
         for i in range(self.n_arms):
             pulls = len(np.where(np.array(self.pulled_arms[-self.window_size:]) == i))
-            self.bounds[i] = self.hyperpar*math.sqrt(np.log(self.t)/pulls)
+            self.bounds[i] = self.hyperpar*math.sqrt(np.log(min(self.t,self.window_size)/pulls))
         
     
     

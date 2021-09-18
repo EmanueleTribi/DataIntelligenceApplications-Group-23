@@ -11,7 +11,7 @@ def activate_cascade(social_network=None, ad_allocation_list=None, learner_id=1,
     active_by_click_array = np.copy(social_network.active_nodes)
     social_network.active_nodes, active_by_influence_reward = active_nodes_influence(social_network, active_by_click_array)
     
-    return active_by_influence_reward + active_by_click_reward, active_by_click_array
+    return active_by_click_array, active_by_influence_reward + active_by_click_reward
 
 
 #function that returns the active nodes after the click part and the reward of having 
