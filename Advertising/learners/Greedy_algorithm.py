@@ -53,7 +53,7 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
                     expected_reward = sum(array_rewards)/len(array_rewards)
                 
                     marginal = expected_reward - previous_reward
-                    print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                    #print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
                     if marginal < 0:
                         marginal = -1
                     marginal_gain[i] = marginal
@@ -62,7 +62,7 @@ def greedy(n_bids, n_adversaries, social_network, rounds=n_rounds, seed=1234):
                     marginal = 0
                     marginal_gain[i] = 0
                     
-                    print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
+                    #print("Marginal Reward for " + str(new_bid) + " is " + str(marginal))
                     new_bid[i] -= 1
             else: 
                 marginal = -2
