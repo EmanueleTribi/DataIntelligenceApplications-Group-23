@@ -5,9 +5,9 @@ from SocialNetwork.cascade import *
 
 class UCB_Learner_qualities(UCB_Learner):
 
-    def __init__(self, arms, hyperpar, social_network,estimation_rounds = 2000):
+    def __init__(self, arms, hyperpar, nodes_estimation):
         super().__init__(arms, hyperpar)
-        self.nodes_estimation = compute_array_estimated_influence(social_network=social_network, rounds=estimation_rounds)
+        self.nodes_estimation = nodes_estimation
     
 
     # seeds it's supposed to be an array of indexes denoting the active nodes (the ones who clicked)
