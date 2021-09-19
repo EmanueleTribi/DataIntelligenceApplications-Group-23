@@ -31,7 +31,7 @@ def experiment(rounds, learner, all_bids, social_network, arms,first = False, qu
     step = 0
     bids = all_bids
 
-    for t in range(0, rounds):
+    for t in trange(0, rounds):
 
         if sliding_window:
             if t %interval == 0:

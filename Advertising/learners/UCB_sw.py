@@ -10,7 +10,8 @@ class UCB_sw(UCB_Learner):
         self.pulled_arms = [] # stores the indexes of the pulled arms
     
     def pull_arm(self):
-        not_pulled = np.where(self.pulled_arms[-self.window_size:] == 0)[0]
+        not_pulled = [i for i in range(self.n_arms) if i not in self.pulled_arms[-self.window_size:] ]
+        # not_pulled = np.where(self.pulled_arms[-self.window_size:] == 0)[0]
 
         if len(not_pulled) != 0:
             self.pulled_arms.append(not_pulled[0])
@@ -28,11 +29,11 @@ class UCB_sw(UCB_Learner):
         self.collected_rewards.append(reward)
 
         pulls = len(np.where(np.array(self.pulled_arms[-self.window_size:]) == pulled_arm_idx))
-        self.exp_values[pulled_arm_idx] = np.sum(self.rewards_per_arm[pulled_arm_idx][-pulls:]) / pulls
+        self.exp_values[pulled_arm_idx] = np.mean(self.rewards_per_arm[pulled_arm_idx][-pulls:])
 
         for i in range(self.n_arms):
             pulls = len(np.where(np.array(self.pulled_arms[-self.window_size:]) == i))
-            self.bounds[i] = self.hyperpar*math.sqrt(np.log(min(self.t,self.window_size)/pulls))
+            self.bounds[i] = self.hyperpar*math.sqrt(np.log(min(self.t,self.window_size))/pulls)
         
     
     
