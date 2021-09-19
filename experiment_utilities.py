@@ -17,21 +17,33 @@ def create_adv_bids():
         adversary_bids.append(adversary_i_bids)
     return adversary_bids
 
-def experiment(rounds, learner, all_bids, social_network, arms,first = False, qualities = False):
+def experiment(rounds, learner, all_bids, social_network, arms,first = False, qualities = False, sliding_window = False, interval = None):
 
     vcg = VCG()
 
     moving_average = []
     moving_average.append(0)
 
+    if sliding_window:
+        assert isinstance(all_bids,list)
+        assert len(all_bids) == (rounds/interval)
+    
+    step = 0
+    bids = all_bids
+
     for t in range(0, rounds):
+
+        if sliding_window:
+            if t %interval == 0:
+                bids = all_bids[step]
+                step += 1
 
         index=learner.pull_arm()
         best_arm = arms[index]
 
 
-        all_bids.insert(0, best_arm)
-        ad_allocation_list = setup(bids=all_bids, n_bids=5)
+        bids.insert(0, best_arm)
+        ad_allocation_list = setup(bids=bids, n_bids=5)
         best_allocation = vcg.all_best_allocations(ad_allocation_list, social_network)
 
         if first:
@@ -63,7 +75,7 @@ def experiment(rounds, learner, all_bids, social_network, arms,first = False, qu
         
         moving_average.append((moving_average[-1] * t + learner.collected_rewards[-1]) / (t+1))
 
-        all_bids.pop(0)
+        bids.pop(0)
         reset_nodes(social_network)
     
     return moving_average
