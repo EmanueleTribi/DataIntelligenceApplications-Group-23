@@ -4,9 +4,9 @@ from Advertising.learners.UCB_sw import *
 from SocialNetwork.cascade import *
 
 class UCB_sw_qualities(UCB_sw):
-    def __init__(self, arms, hyperpar, window_size, social_network, estimation_rounds):
+    def __init__(self, arms, hyperpar, window_size, nodes_estimation):
         super().__init__(arms, hyperpar, window_size)
-        self.nodes_estimation = compute_array_estimated_influence(social_network=social_network, rounds=estimation_rounds)
+        self.nodes_estimation = nodes_estimation
 
     
     def update(self, pulled_arm_idx, reward, seeds):
