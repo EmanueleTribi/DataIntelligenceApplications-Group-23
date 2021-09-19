@@ -10,7 +10,7 @@ class GTS_SW_Learner():
         self.n_arms = len(arms)
         self.arms = arms
         self.tau = 1/variance  # precision of the Gaussian
-        self.tau0 = np.ones(self.n_arms)*0.0001 #prior precision
+        self.tau0 = np.ones(self.n_arms)*0.001 #prior precision
         self.u0 = np.ones(self.n_arms) #expected means
         self.rewards_per_arm = [[] for i in range(self.n_arms)] # collection of rewards for each arm
         self.t = 0
