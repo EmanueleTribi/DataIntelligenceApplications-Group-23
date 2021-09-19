@@ -1,3 +1,4 @@
+import itertools
 from tqdm.notebook import trange
 from SocialNetwork.social_network_environment import *
 from pprint import pprint
@@ -73,3 +74,20 @@ def plot_clairvoyant(clairvoyant, moving_average):
     plt.axhline(y = clairvoyant, color = 'r', linestyle = '-')
     plt.plot(moving_average, color = 'b')
     plt.show()
+
+
+def arms_creation(seed=None, number_of_arms=-1):
+    arms = []
+    if number_of_arms < 0:
+        for i in itertools.product([0, 1, 2, 3, 4], repeat=5):
+            arms.append(list(i))
+    else:
+        random.seed(seed)
+
+        arms = []
+        for i in range(0, number_of_arms):
+            arm = []
+            for i in range(0, 5):
+                arm.append(random.randint(0, 4))
+            arms.append(np.array(arm))
+    return arms
