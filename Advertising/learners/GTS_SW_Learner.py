@@ -10,8 +10,8 @@ class GTS_SW_Learner():
         self.n_arms = n_arms 
         self.arms = arms
         self.tau = 1/variance  # precision of the Gaussian
-        self.tau0 = np.ones(n_arms)*0.001 #prior precision
-        self.u0 = np.zeros(n_arms) #expected means
+        self.tau0 = np.ones(n_arms)*0.0001 #prior precision
+        self.u0 = np.ones(n_arms) #expected means
         self.rewards_per_arm = [[] for i in range(self.n_arms)] # collection of rewards for each arm
         self.t = 0
         self.ad_id = ad_id #identity of the learner
@@ -45,5 +45,10 @@ class GTS_SW_Learner():
 
         rews = np.sum(self.rewards_per_arm[pulled_arm][-count:])
 
+        mean_rews = rews/len(self.rewards_per_arm[pulled_arm][-count:])
+
         self.u0[pulled_arm] = (self.tau0[pulled_arm]*self.u0[pulled_arm] +
-                               self.tau*rews)/(self.tau0[pulled_arm]+(count*self.tau))
+                               self.tau*count*mean_rews)/(self.tau0[pulled_arm]+(count*self.tau))
+
+        # self.u0[pulled_arm] = (self.tau0[pulled_arm]*self.u0[pulled_arm] +
+        #                        self.tau*rews)/(self.tau0[pulled_arm]+(count*self.tau))

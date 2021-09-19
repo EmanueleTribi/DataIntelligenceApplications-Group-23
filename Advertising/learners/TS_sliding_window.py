@@ -17,7 +17,7 @@ def test_sw(learner, arms, list_adv_bids, only_first,  n_rounds, lambdas, social
         if i %interval == 0: 
             adversary_bids = list_adv_bids[times_change]
             times_change += 1
-            thing_to_plot.append(0)
+            #thing_to_plot.append(0)
 
         arm_learner, pulled_arm = learner.pull_arm()
 
@@ -40,7 +40,7 @@ def test_sw(learner, arms, list_adv_bids, only_first,  n_rounds, lambdas, social
                         temp_allocation[k].ad_id = None
                         best_allocation[j] = temp_allocation
 
-        total_reward, active_nodes = activate_cascade(
+        active_nodes, total_reward  = activate_cascade(
             social_network=social_network, ad_allocation_list=best_allocation, slot_prominence=deltas)
 
         payments = vcg.payments(
