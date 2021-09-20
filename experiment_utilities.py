@@ -22,7 +22,6 @@ def experiment(rounds, learner, all_bids, social_network, arms,first = False, qu
     vcg = VCG()
 
     moving_average = []
-    moving_average.append(0)
 
     if sliding_window:
         assert isinstance(all_bids,list)
@@ -71,8 +70,10 @@ def experiment(rounds, learner, all_bids, social_network, arms,first = False, qu
             learner.update(index, reward, np.where(active_nodes==1)[0])
         else:
             learner.update(index, reward)
-        
-        moving_average.append((moving_average[-1] * t + learner.collected_rewards[-1]) / (t+1))
+        if len(moving_average) == 0:
+            moving_average.append(reward)
+        else:
+            moving_average.append((moving_average[-1] * t + learner.collected_rewards[-1]) / (t+1))
 
         bids.pop(0)
         reset_nodes(social_network)
