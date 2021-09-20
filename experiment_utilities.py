@@ -86,6 +86,8 @@ def plot_clairvoyant(clairvoyant, moving_average, label, moving_average2=np.arra
     plt.axhline(y = clairvoyant, color = 'r', linestyle = '-', label='Clairvoyant')
     plt.plot(moving_average, color = 'b', label=label)
     plt.title(title)
+    plt.xlabel("Rounds")
+    plt.ylabel("Reward rolling mean")
     if moving_average2.all() != None:
         plt.plot(moving_average2, color = 'g', label=label2)
     plt.legend()

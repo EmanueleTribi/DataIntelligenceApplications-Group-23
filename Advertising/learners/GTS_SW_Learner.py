@@ -46,17 +46,17 @@ class GTS_SW_Learner():
 
 
         #forget t>sliding window
-        # if self.t > self.size_SW:
-        #     #subtract contribute 
-        #     arm_out_index = (int)(self.pulled_arms[(self.t-self.size_SW)-1])   ##TODO: -1 NECESSARIO????????
-        #     self.tau0[arm_out_index] -= self.story_t0[arm_out_index][0]
-        #     #remove contribute from last (historical) count
-        #     self.story_t0[arm_out_index].pop(0)
+        if self.t > self.size_SW:
+            #subtract contribute 
+            arm_out_index = (int)(self.pulled_arms[(self.t-self.size_SW)-1])   ##TODO: -1 NECESSARIO????????
+            self.tau0[arm_out_index] -= self.story_t0[arm_out_index][0]
+            #remove contribute from last (historical) count
+            self.story_t0[arm_out_index].pop(0)
         #insert story count
 
         #
 
-        self.tau0[pulled_arm] = 0.0001+count*self.tau
+        self.tau0[pulled_arm] = self.tau0[pulled_arm]+count*self.tau
         self.story_t0[pulled_arm].append(count*self.tau)
 
         #self.collected_tau0[pulled_arm].append(self.tau0[pulled_arm])
