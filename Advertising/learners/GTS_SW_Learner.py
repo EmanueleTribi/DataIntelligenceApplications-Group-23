@@ -4,6 +4,7 @@ from SocialNetwork.social_network_environment import *
 from SocialNetwork.cascade import *
 from Advertising.enviroment.bid import *
 from Advertising.enviroment.VCG import *
+import math
 
 class GTS_SW_Learner():
     def __init__(self, arms, variance=20,size_SW=1000 ,ad_id=1):
@@ -20,11 +21,13 @@ class GTS_SW_Learner():
         self.size_SW=size_SW # window size
         self.collected_tau0=[ []  for i in range(self.n_arms) ]# we collect the precision at each time
         self.number_of_pulls = np.zeros(self.n_arms)
+        self.story_t0 = [[] for i in range(self.n_arms)]
+       
         #to update it while the window moves over time
 
 #sample the new arm from a gaussian distribution
     def pull_arm(self):
-        values = np.random.normal(self.u0, 1/self.tau0)
+        values = np.random.normal(self.u0, np.sqrt(1/self.tau0))
         pulled_arm = np.argmax(values)
         self.pulled_arms=np.append(self.pulled_arms, pulled_arm)
         self.number_of_pulls[pulled_arm] += 1
@@ -41,15 +44,29 @@ class GTS_SW_Learner():
         count=len(np.where(self.pulled_arms[-self.size_SW:]==pulled_arm)[0])
         # self.tau0[pulled_arm] =  np.sum(self.collected_tau0[-count:])+ count*self.tau
 
-        self.tau0[pulled_arm] += count*self.tau
+
+        #forget t>sliding window
+        # if self.t > self.size_SW:
+        #     #subtract contribute 
+        #     arm_out_index = (int)(self.pulled_arms[(self.t-self.size_SW)-1])   ##TODO: -1 NECESSARIO????????
+        #     self.tau0[arm_out_index] -= self.story_t0[arm_out_index][0]
+        #     #remove contribute from last (historical) count
+        #     self.story_t0[arm_out_index].pop(0)
+        #insert story count
+
+        #
+
+        self.tau0[pulled_arm] = 0.0001+count*self.tau
+        self.story_t0[pulled_arm].append(count*self.tau)
+
         #self.collected_tau0[pulled_arm].append(self.tau0[pulled_arm])
 
         rews = np.sum(self.rewards_per_arm[pulled_arm][-count:])
 
-        mean_rews = rews/len(self.rewards_per_arm[pulled_arm][-count:])
+        #mean_rews = rews/len(self.rewards_per_arm[pulled_arm][-count:])
 
         self.u0[pulled_arm] = (self.tau0[pulled_arm]*self.u0[pulled_arm] +
-                               self.tau*count*mean_rews)/(self.tau0[pulled_arm]+(count*self.tau))
+                               self.tau*rews)/(self.tau0[pulled_arm]+(count*self.tau))
 
         # self.u0[pulled_arm] = (self.tau0[pulled_arm]*self.u0[pulled_arm] +
         #                        self.tau*rews)/(self.tau0[pulled_arm]+(count*self.tau))
