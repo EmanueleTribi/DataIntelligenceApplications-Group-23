@@ -80,11 +80,15 @@ def experiment(rounds, learner, all_bids, social_network, arms,first = False, qu
     
     return moving_average
 
-def plot_clairvoyant(clairvoyant, moving_average):
+def plot_clairvoyant(clairvoyant, moving_average, label, moving_average2=np.array([None]), label2=None, title=None):
 
     plt.figure()
-    plt.axhline(y = clairvoyant, color = 'r', linestyle = '-')
-    plt.plot(moving_average, color = 'b')
+    plt.axhline(y = clairvoyant, color = 'r', linestyle = '-', label='Clairvoyant')
+    plt.plot(moving_average, color = 'b', label=label)
+    plt.title(title)
+    if moving_average2.all() != None:
+        plt.plot(moving_average2, color = 'g', label=label2)
+    plt.legend()
     plt.show()
 
 
